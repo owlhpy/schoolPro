@@ -1,0 +1,24 @@
+{  
+  "extraBabelPlugins": [  
+    ["import", { "libraryName": "antd", "libraryDirectory": "es", "style": true }]  
+  ],  
+  "theme": {  
+  "primary-color": "#ff7a45"  
+  },
+  "env": {
+        "development": {
+            "extraBabelPlugins": [
+                "dva-hmr"
+            ]
+        }
+  },
+   "proxy": {
+        "/api": {
+            "target": "http://localhost:3366",
+            "changeOrigin": true,
+            "pathRewrite": { "^/api" : "/" }
+        }
+    }
+  
+
+}

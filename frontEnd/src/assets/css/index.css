@@ -1,0 +1,41 @@
+:global(.sidebar){
+  min-height: 100vh;
+  background-color:grey;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 60px;
+  padding-top: 30vh;
+  padding-left: 10px;
+  text-shadow: 1px 1px 1px #eee;
+
+}
+:global(.header){
+ background-color: white;
+ display: flex;
+ justify-content: space-between;
+ padding: 0 20vw;
+
+}
+:global(.footer){
+text-align: center;
+
+}
+:global(.content){
+padding: 2vh 20vw;
+min-height:80vh;
+
+}
+
+:global(.slide) {
+  text-align: center;
+  height: 260px;
+  line-height: 160px;
+  background: lightblue;
+  overflow: hidden;
+  /*border:1px solid orange;*/
+}
+
+.slide h3 {
+  color: #fff;
+}
