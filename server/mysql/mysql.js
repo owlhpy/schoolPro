@@ -3,7 +3,7 @@ const mysql = require('mysql')
 const pool  = mysql.createPool({
   host     : 'localhost',   // 数据库地址
   user     : 'root',    // 数据库用户
-  password : '123',   // 数据库密码
+  password : '123456',   // 数据库密码
   database : 'school'  // 选中数据库
 })
 //封装异步query查询方法

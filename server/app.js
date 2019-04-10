@@ -37,7 +37,7 @@ const CONFIG = {
   /** 'session' will result in a cookie that expires when session/browser is closed */
   /** Warning: If a session cookie is stolen, this cookie will never expire */
   maxAge: 86400000,
-  path:'/login',
+  // path:'/login',
   autoCommit: true, /** (boolean) automatically commit headers (default true) */
   overwrite: true, /** (boolean) can overwrite or not (default true) */
   httpOnly: true, /** (boolean) httpOnly or not (default true) */
@@ -46,6 +46,8 @@ const CONFIG = {
   renew: false, /** (boolean) renew session when session is nearly expired, so we can always keep user logged in. (default is false)*/
 };
 
+app.use(cors()) // 解决跨域问题
+app.use(koaBody()) // 把koa2上下文的formData数据解析到ctx.request.body中
 app.use(session(CONFIG, app));
 // or if you prefer all default config, just use => app.use(session(app));
 app.use(router.routes()) // 使用路由中间件处理路由
@@ -59,8 +61,8 @@ app.use(router.routes()) // 使用路由中间件处理路由
 //   ctx.body = n + ' views';
 // });
 
-app.use(koaBody()) // 把koa2上下文的formData数据解析到ctx.request.body中
-app.use(cors()) // 解决跨域问题
+
+
 
 app.listen(3366) // 监听3366端口
 console.log('app is stared & listening on port 3366')

@@ -3,7 +3,11 @@ const passport = require('./passport')
 
 const UserController = require("./controllers/UserController.js")
 
-router.get('/getAllUser',UserController.getAllUser)
+// 登录
+router.post('/userLogin',UserController.userLogin)
+// 注册
+router.post('/userSignup',UserController.userSignup)
+
 
 router.get('/logout',UserController.logout)
 

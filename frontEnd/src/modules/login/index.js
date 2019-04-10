@@ -42,33 +42,26 @@ class Login extends React.Component {
     }
     return (
       <div style={{height:'100%',width:'100%',display:'flex',justifyContent:'center',alignItem:'center',paddingTop:"20vh"}}>
+      <h3>登录</h3>
            <Form style={{width:'300px'}}>
         <FormItem>
-          {getFieldDecorator('username', {
+          {getFieldDecorator('nickName', {
             rules: [{ required: true, message: 'Please input your username!' }],
           })(
-            <Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="Username" />
+            <Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="登录昵称" maxLength={15} />
           )}
         </FormItem>
         <FormItem>
           {getFieldDecorator('password', {
             rules: [{ required: true, message: 'Please input your Password!' }],
           })(
-            <Input prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} type="password" placeholder="Password" />
+            <Input prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} type="password" placeholder="密码" />
           )}
         </FormItem>
         <FormItem>
-          {getFieldDecorator('remember', {
-            valuePropName: 'checked',
-            initialValue: true,
-          })(
-            <Checkbox>Remember me</Checkbox>
-          )}
-          <a style={{float:'right'}} href="">Forgot password</a>
           <Button type="primary" htmlType="submit" style={{width:'100%'}} onClick={handleSubmit}>
-            Log in
+            登录
           </Button>
-          Or <a href="">register now!</a>
         </FormItem>
       </Form>
         </div>

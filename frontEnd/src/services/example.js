@@ -6,7 +6,11 @@ export function query() {
 
 export async function userLogin(param) {
 	// console.log("request",param)
-    return request('/api/getAllUser',{method:'GET',data:param});
+    return request('/api/userLogin',{method:'post',data:param});
+}
+export async function userSignup(param) {
+	// console.log("request",param)
+    return request('/api/userSignup',{method:'post',data:param});
 }
 
 export async function logout(param) {

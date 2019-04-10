@@ -1,4 +1,4 @@
-import {getList} from '../../services/example'
+import {getList,userSignup} from '../../services/example'
 
 export default{
 	namespace:'signup',
@@ -19,6 +19,13 @@ export default{
 				callback&&callback(list)
 			}
 
+		},
+		*userSignup({payload,callback},{call,put,select}){	
+				const data =yield call(userSignup,payload)
+				return data;
+			
+         
+			
 		}
      
 	},
