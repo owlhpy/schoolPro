@@ -13,6 +13,11 @@ export async function userSignup(param) {
     return request('/api/userSignup',{method:'post',data:param});
 }
 
+export async function checkLogin(param) {
+	// console.log("request",param)
+    return request('/api/checkLogin',{method:'GET',data:param});
+}
+
 export async function logout(param) {
 	// console.log("request",param)
     return request('/api/logout',{method:'GET',data:param});

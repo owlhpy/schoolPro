@@ -8,7 +8,11 @@ const Search = Input.Search;
 class Product extends React.Component{
 	constructor(props){
 		super(props)
+    
 	}
+  componentDidMount(){
+    
+  }
 	render(){
 		const daily = [
   { chapternum:3,
@@ -94,4 +98,4 @@ class Product extends React.Component{
 // 		)
 // }
 
-export default Product;
+export default connect(({selfs})=>({selfs}))(Product);

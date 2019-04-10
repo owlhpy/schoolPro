@@ -43,12 +43,12 @@ const LoginBtn = ({dispatch,user})=>{
         </Menu.Item>
       </Menu>
     );
-    if(user&&user.username){
+    if(sessionStorage.__SID){
          return (
         <div>
           <Dropdown overlay={menu}>
             <a className="ant-dropdown-link" href="#">
-              {user.username} <Icon type="down" />
+              {user} <Icon type="down" />
             </a>
           </Dropdown>
           <Button size="small" onClick ={()=>{dispatch({type:'home/logout'})}}>退出登錄</Button>

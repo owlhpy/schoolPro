@@ -1,4 +1,4 @@
-// import {getMenu,userLogin,test,getDaily} from '../../services/example'
+import {checkLogin} from '../../services/example'
 import {message} from 'antd'
 
 export default{
@@ -9,6 +9,12 @@ export default{
   effects:{
       *getMenu({payload,callback},{call,put,select}){
           console.log('OK')
+      },
+      *checkLogin({payload,callback},{call,put,select}){
+          const data = yield call(checkLogin,payload);
+          if(data.code==0){
+            console.log(data.msg)
+          }
       } 
      
 

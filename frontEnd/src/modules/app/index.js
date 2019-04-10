@@ -56,7 +56,8 @@ function f_getRoutes(com){
 
 
 const App = ({home,dispatch,location})=>{
-	const {user} = home
+	// const {user} = home
+  const user = sessionStorage.getItem('__SID'); 
 	const menu = [
 	{menuname:'book',cpath:'book/index',mpath:'book/model'},
 	{menuname:'hotWriter',cpath:'hotWriter/index',mpath:'hotWriter/model'},

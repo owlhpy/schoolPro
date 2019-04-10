@@ -1,6 +1,9 @@
-import Ajax from 'robe-ajax'
-// import { browserHistory } from 'dva/router';
 
+import Ajax from 'robe-ajax'
+import app from '../index.js'
+import { routerRedux } from 'dva/router';
+// import { browserHistory } from 'dva/router';
+console.log('app',app)
 
 export default function request (url, options) {
     var data
@@ -13,6 +16,7 @@ export default function request (url, options) {
   return Ajax.ajax({
     url: url,
     method: options.method || 'get',
+    withCredentials:true,
     error:err=>{console.log('ajax',err)},
     // timeout : 2000,
     data: options.data||{},
@@ -26,6 +30,12 @@ export default function request (url, options) {
     //     request.setRequestHeader(appConfig.sessionId, sid);
     // },
   }).done((data) => {
+    if(data.code&&data.code=='404'){
+        app._history.push('/login')
+        return;
+        // window.history.push (`${window.location.host}/login`)
+        // browserHistory.push()
+    }
    
         // browserHistory.push('/')
         // location.pathname='/welcome'

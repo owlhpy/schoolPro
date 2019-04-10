@@ -8,7 +8,8 @@ class UserController {
     let result = await query( sql )
     if(result.length>0){
     	console.log('sql result',result)
-        ctx.session.userInfo = 'test';
+        ctx.session.__SID = result[0].id;
+        console.log('ctx.session.__SID',ctx.session.__SID)
     	ctx.body = {code:'0',message:'查询成功',data:result}
     }else{
     	console.log('sql result',result)
@@ -29,6 +30,19 @@ class UserController {
         ctx.body = {code:'1',message:'注册错误'}
        }
         
+    }
+    // 判断是否登录
+    static async checkLogin(ctx,next){
+        console.log('path',ctx.session.__SID);
+        if(!ctx.session.__SID){
+           
+           ctx.body={code:'404',msg:'/login'}
+           // ctx.redirect('/login');
+        }else{
+             ctx.body={code:'0',msg:'aaaaa'}
+        }
+        // ctx.session.__SID = null;
+        // ctx.body = {code:'0',message:'退出登录成功'}
     }
     // 登出函数
     static async logout(ctx,next){

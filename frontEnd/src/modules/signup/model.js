@@ -22,10 +22,7 @@ export default{
 		},
 		*userSignup({payload,callback},{call,put,select}){	
 				const data =yield call(userSignup,payload)
-				return data;
-			
-         
-			
+				return data;	
 		}
      
 	},

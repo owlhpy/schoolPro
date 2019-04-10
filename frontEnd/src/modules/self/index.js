@@ -53,7 +53,8 @@ function f_getRoutes(com){
         );     
     });
 };
-const Self  = ()=>{
+const Self  = ({dispatch})=>{
+  dispatch({type:'selfs/checkLogin'})
 	const menu=[
 	{menuname:'self/friendList',cpath:'friendList/index'},
 	{menuname:'self/message',cpath:'message/index'},
