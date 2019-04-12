@@ -1,5 +1,6 @@
 const { query } = require('../mysql/mysql')
 
+
 class UserController {
     // 登录函数
 	static async userLogin(ctx, next) {
@@ -20,6 +21,7 @@ class UserController {
     static async userSignup(ctx,next){
         let {nickName,password} = ctx.request.body
         let birthday = new Date();
+        // console.log('uuid',replace(uuid(), '-', ''))
         // console.log(ctx.request.body);
         let sql = `insert into tb_sp_user (id,penName,nickName,password,birthday) values(replace(uuid(), '-', ''),"${nickName}","${nickName}","${password}",now())`
         let result = await query( sql )
@@ -33,16 +35,14 @@ class UserController {
     }
     // 判断是否登录
     static async checkLogin(ctx,next){
-        console.log('path',ctx.session.__SID);
-        if(!ctx.session.__SID){
+        console.log('sid',ctx.header.__sid)
+        if((ctx.header.__sid==='null') || (!ctx.session.__SID)  ){
            
            ctx.body={code:'404',msg:'/login'}
            // ctx.redirect('/login');
         }else{
              ctx.body={code:'0',msg:'aaaaa'}
         }
-        // ctx.session.__SID = null;
-        // ctx.body = {code:'0',message:'退出登录成功'}
     }
     // 登出函数
     static async logout(ctx,next){

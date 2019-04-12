@@ -1,6 +1,7 @@
 
 import Ajax from 'robe-ajax'
 import app from '../index.js'
+import {message} from 'antd'
 import { routerRedux } from 'dva/router';
 // import { browserHistory } from 'dva/router';
 console.log('app',app)
@@ -24,13 +25,16 @@ export default function request (url, options) {
     contentType: options.contentType!==undefined?options.contentType:undefined,
     // processData: options.method === 'get',
     // dataType: options.dataType || 'JSON',
-    // beforeSend: function(request) {
-
-    //     let sid = sessionStorage.getItem(appConfig.sessionId)
-    //     request.setRequestHeader(appConfig.sessionId, sid);
-    // },
+    beforeSend: function(request) {
+        const sid = sessionStorage.getItem('userId')
+        request.setRequestHeader('__SID', sid);
+    },
   }).done((data) => {
     if(data.code&&data.code=='404'){
+        if(sessionStorage.getItem('__SID')){
+            sessionStorage.removeItem('__SID')
+            message.error("登录超时，请重新登录！")
+        }
         app._history.push('/login')
         return;
         // window.history.push (`${window.location.host}/login`)

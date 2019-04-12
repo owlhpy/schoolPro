@@ -1,5 +1,6 @@
 
 import React from 'react'
+// import '../../assets/js/config.js'
 import { connect } from "dva";
 import {
   Form,
@@ -33,6 +34,7 @@ class Login extends React.Component {
         dispatch({ type: 'login/userLogin',payload: {...values}}).then((data)=>{if(data.code=='0'){
           // console.log('cookie',document.cookie.__SID)S
           sessionStorage.setItem('__SID', data.data[0].nickName);
+          sessionStorage.setItem('userId', data.data[0].id)
           // dispatch({type:'home/querySuccess',payload:{user:{username:data.data[0].nickName}}});
           dispatch(routerRedux.push('/'))} else message.error("用户名或密码错误")})
         

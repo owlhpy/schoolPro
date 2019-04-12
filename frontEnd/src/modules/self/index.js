@@ -60,12 +60,13 @@ const Self  = ({dispatch})=>{
 	{menuname:'self/message',cpath:'message/index'},
 	{menuname:'self/product',cpath:'product/index'},
 	{menuname:'self/setting',cpath:'setting/index'},
-	{menuname:'self/write',cpath:'write/index'},
+  {menuname:'self/write',cpath:'write/index'},
+	{menuname:'self/write/:id',cpath:'write/index'},
 	]
 	const ComArr = renderComponent(menu,"./");
 	return(
 		<div>
-			test
+
 			 <Switch>
 			 <Route
             path={"/self"}
