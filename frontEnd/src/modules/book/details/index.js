@@ -11,13 +11,25 @@ class Chapter extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-
+        bookMsg:[],
+        chapterMsg:{},
+        userMsg:{}
     }
   }
   componentDidMount() {
-    console.log(this.props.bookmessage)
+    const {dispatch} = this.props;
+    let temp = window.location.pathname.split('/');
+    let chapterId = temp[temp.length-1];
+    console.log('chapterId',chapterId)
+    dispatch({type:"book/getChapter",payload:{chapterId:chapterId}}).then((data)=>{
+       if(data.code=='0'){
+        this.setState({bookMsg:data.data.bookMsg,chapterMsg:data.data.chapterMsg,userMsg:data.data.userMsg})
+       }
+    })
+
   }
   render() {
+     const {bookMsg,chapterMsg,userMsg} = this.state;
      const bookmessage = {
             bookname:"TestBook",
             bookid:1,
@@ -69,22 +81,27 @@ class Chapter extends React.Component {
     		<Row gutter={16}>
     		<Col span={18}>
     		<Card 
-    			title={<h1>{`${bookmessage.bookname}——`}<small>{`第${bookmessage.bookid}章`}</small></h1>}
-    			extra={<div><Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />{list.writer}</div>}
-    			actions={[<div><Icon type="heart" />喜欢<p>{list.like}</p></div>]}
+    			title={<h1>{`${chapterMsg.bookName}——`}<small>{`第${chapterMsg.num}章`}</small></h1>}
+    			extra={<div><Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />{userMsg.penName}</div>}
+    			actions={[<div><Icon type="heart" />喜欢<p>{'10'}</p></div>]}
     			> 
-    				<h2>{list.chaptername}</h2>
-    				<p>{list.content}</p>
+    				<h2>{chapterMsg.title}</h2>
+            <div dangerouslySetInnerHTML={{
+                __html: chapterMsg.content
+             }}>
+            </div>
+          
+    				
     		</Card>
     		</Col>
     		<Col span={6}>
     		 <List
 		      size="small"
-		      header={<div>目录<Link to={`/details/${bookmessage.bookid}`} style={{float:'right'}}>返回书首页</Link></div>}
+		      header={<div>目录<Link to={`/book/${chapterMsg.bookId}`} style={{float:'right'}}>返回书首页</Link></div>}
 		      footer={<div style={{display:'flex',flexDirection:'row',justifyContent:'spaceBetween'}}><Button icon="eye" size="small" style={{backgroundColor:'transparent',border:'1px solid white',marginRight:'5px'}}>推荐</Button><Button size="small" icon="star" style={{backgroundColor:'transparent',border:'1px solid white'}}>收藏此书</Button></div>}
 		      bordered
-		      dataSource={bookmessage.chapters}
-		      renderItem={item => (<List.Item><Link to={`/details/chapter/${item.chapterid}`}>{item.chaptername}</Link></List.Item>)}
+		      dataSource={bookMsg}
+		      renderItem={item => (<List.Item><Link to={`/details/chapter/${item.id}`}>{item.title}</Link></List.Item>)}
 		    />
     		</Col>
     			
@@ -153,4 +170,4 @@ class Chapter extends React.Component {
 // 		)
 // }
 
-export default Form.create()(Chapter);
+ export default connect(({book})=>({book}))(Form.create()(Chapter));

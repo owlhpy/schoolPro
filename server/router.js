@@ -15,7 +15,11 @@ router.post('/userSignup',UserController.userSignup)
 router.get('/logout',UserController.logout)
 // 编辑章节，新建书
 router.post('/bookSave',BookController.bookSave)
-// 编辑章节，新建书
+// 获取作品
 router.get('/getProducts',BookController.getProducts)
+// 获取章节详情
+router.get('/getChapter',BookController.getChapter)
+// 获取某本书详情
+router.get('/getBook',BookController.getBook)
 
 module.exports = router

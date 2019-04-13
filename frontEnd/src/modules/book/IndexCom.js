@@ -6,14 +6,20 @@ import { connect } from "dva";
 class IndexCom extends React.Component{
       constructor(props){
         super(props)
+        this.state = {chapterMsg:[],userMsg:[]}
       }
 
       componentDidMount(){
         let temp = window.location.pathname.split('/');
-        // console.log(temp)
-        if(temp.length>2){
-          console.log(temp[temp.length-1])
-        }
+        let bookId = temp[temp.length-1];
+        const {dispatch} = this.props;
+        dispatch({type:'book/getBook',payload:{bookId:bookId}}).then((data)=>{
+          if(data.code=='0'){
+            console.log('data.data',data.data)
+            this.setState({chapterMsg:data.data.chapterMsg,userMsg:data.data.userMsg});
+          }
+        })
+        
       }
 
       render(){
@@ -29,9 +35,10 @@ class IndexCom extends React.Component{
             img:"one.png"
 
         } 
+        const {chapterMsg,userMsg} = this.state;
        return(
     <div>
-     <h2>{`《${list&&list.bookname}》`}</h2>         
+     <h2>{`《${chapterMsg[0]?chapterMsg[0].bookName:''}》`}</h2>         
                
                 <Row gutter={16}>
                 <Col span={6}>
@@ -41,11 +48,11 @@ class IndexCom extends React.Component{
                  <h3><Icon type="book" />目录</h3>
                  <List grid={{ gutter: 16, column: 2 }}>
                     {
-                        list.chapters.map(item=>{
+                        chapterMsg.map(item=>{
                             return(
                                
-                                    <List.Item key={item.chapterid}>
-                                        <Link to={`/book/details/5896`}>{`第${item.chapternum}章：${item.chaptername}`}</Link>
+                                    <List.Item key={item.id}>
+                                        <Link to={`/book/details/${item.id}`}>{`第${item.num}章：${item.title}`}</Link>
                                     </List.Item>
                               
                                 )
@@ -55,12 +62,12 @@ class IndexCom extends React.Component{
                   <h3>作者团</h3>
                   <List grid={{ gutter: 16, column: 8 }}>
                     {
-                        list.chapters.map(item=>{
+                        userMsg.map(item=>{
                             return(
                                
-                                    <List.Item key={item.chapterid} style={{textAlign:'center'}}>
+                                    <List.Item key={item.id} style={{textAlign:'center'}}>
                                        <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
-                                       <p>{item.writer}</p>
+                                       <p>{item.penName}</p>
                                     </List.Item>
                               
                                 )
@@ -73,15 +80,15 @@ class IndexCom extends React.Component{
                    <List grid={{ gutter:16, column: 3 }}>
             <List.Item>
               <h4><Icon type="star" theme="twoTone" twoToneColor="orange"/>收藏</h4>
-              <h4 style={{textAlign:'center',width:'100%'}}>{list.collection}</h4>
+              <h4 style={{textAlign:'center',width:'100%'}}>{'10'}</h4>
             </List.Item>
             <List.Item>
               <h4><Icon type="eye" />推荐</h4>
-              <h4 style={{textAlign:'center',width:'100%'}}>{list.recommend}</h4>
+              <h4 style={{textAlign:'center',width:'100%'}}>{'10'}</h4>
             </List.Item>
             <List.Item>
               <h4><Icon type="book"/>章节</h4>
-              <h4 style={{textAlign:'center',width:'100%'}}>{list.chapternum}</h4>
+              <h4 style={{textAlign:'center',width:'100%'}}>{'10'}</h4>
             </List.Item>
           </List>
                 </Col>

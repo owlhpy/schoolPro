@@ -10,13 +10,20 @@ export async function bookSave(param) {
 // 获取章节详情
 export async function getChapter(param) {
 	// console.log("request",param)
-    return request('/api/getChapter',{method:'post',data:param});
+    return request('/api/getChapter',{method:'get',data:param});
 }
 // 获取作品
 export async function getProducts(param) {
 	// console.log("request",param)
     return request('/api/getProducts',{method:'get',data:param});
 }
+
+// 获取某个作品作品
+export async function getBook(param) {
+	// console.log("request",param)
+    return request('/api/getBook',{method:'get',data:param});
+}
+
 
 
 // 登录

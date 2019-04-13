@@ -1,21 +1,71 @@
 const { query } = require('../mysql/mysql')
 const uuidv1 = require('uuid/v1');
+const uuidV4 = require('uuid/v4');
 
-function GetuuId(){
-		let temp = uuidv1();
-		temp = temp.split('-').join('');
+function GetuuId(type){
+    var temp;
+    if(type=='time'){
+        temp = uuidv1();
+        temp = temp.split('-').join('');
+    }else{
+        temp = uuidV4();
+        temp = temp.split('-').join('');
+        
+
+    }
+		
 		return temp;
 }
 class BookController{
-	// 生成uuid
+	
 	
 	static async pageBooks(ctx,next){
         
     }
-    static async getChapter(ctx,next){
-        const {chapterId} = ctx.query;
-        // let sql = `select * from tb_sp_chapter as A inner join tb_sp_book as B where A.bookId` 	
+    // 某本书的详情页
+    static async getBook(ctx,next){
+       const {bookId} = ctx.query;
+       
+        let sql2 = `select bookId,bookName,chapterNum,A.id,isDelete,isShow,num,pic,title,A.writerId from tb_sp_chapter A join tb_sp_book B on A.bookId=B.id where A.bookId = "${bookId}"`
+        let result2 = await query( sql2 );
+        if(result2.length>0){
+            var user = result2.map(item=>{
+                return item.writerId;
+            })
+            user = user.toString();
+            let sql3 = `select * from tb_sp_user where id in ("${user}")`;
+            let result3 = await query( sql3 );
+            if(result3.length>0){
+            ctx.body = {code:'0',msg:'成功',data:{chapterMsg:result2,userMsg:result3}}
+        }else{
+            ctx.body = {code:'1',msg:'错误'}
+        } 
+
+        };
+          
     }
+    // 某个章节的详情页
+    static async getChapter(ctx,next){
+    	console.log('I come here')
+       const {chapterId} = ctx.query;
+        // let writerId = ctx.header.__sid;
+        //当前章节
+        let sql = `select * from tb_sp_chapter S1 join tb_sp_book S2 on S1.bookId=S2.id where S1.id="${chapterId}"`;
+        let result = await query( sql );
+        let bookId = result[0].bookId;
+        let userId = result[0].writerId;
+        let sql2 = `select * from tb_sp_chapter where bookId = "${bookId}"`
+        let result2 = await query( sql2 );
+        let sql3 = `select * from tb_sp_user where id="${userId}"`;
+        let result3 = await query( sql3 );
+        console.log('result3',result3)   
+        if(result.length>0&&result2.length>0){
+        	ctx.body = {code:'0',msg:'成功',data:{bookMsg:result2,chapterMsg:result[0],userMsg:result3[0]}}
+        }else{
+        	ctx.body = {code:'1',msg:'错误'}
+        }	
+    }
+    // 作品页的首页
     static async getProducts(ctx,next){
         const {chapterId} = ctx.query;
         let writerId = ctx.header.__sid;
@@ -28,6 +78,7 @@ class BookController{
         }
         // let sql = `select * from tb_sp_chapter as A inner join tb_sp_book as B where A.bookId` 	
     }
+    // 写作修改新增
     static async bookSave(ctx,next){
     	console.log('ctx.body',ctx.request.body)
     	let writerId = ctx.header.__sid;
@@ -36,7 +87,7 @@ class BookController{
         if(updateType==0){
         const {bookTitle,chapterTitle,content,status,num} = ctx.request.body;
         let bookId  = GetuuId();
-        let chapterId = GetuuId();
+        let chapterId = GetuuId("time");
         // 书新增
         let sql1 = `insert into tb_sp_book (id,bookName,writerId,status,create_date) 
         values("${bookId}","${bookTitle}","${writerId}","${status}",now());`;

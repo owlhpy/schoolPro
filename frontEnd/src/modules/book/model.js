@@ -1,15 +1,20 @@
-// import {getMenu,userLogin,test,getDaily} from '../../services/example'
+import {getChapter,getBook} from '../../services/example'
 import {message} from 'antd'
 
 export default{
   namespace:'book',
   state:{
-    user:{userName:'hpy'}
   },
   effects:{
-      *getMenu({payload,callback},{call,put,select}){
-          console.log('OK')
-      } 
+      *getChapter({payload,callback},{call,put,select}){
+          const data = yield call(getChapter,payload);
+          return data;
+      },
+      *getBook({payload,callback},{call,put,select}){
+          const data = yield call(getBook,payload);
+          return data;
+      },
+      
      
 
   },

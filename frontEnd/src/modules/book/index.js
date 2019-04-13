@@ -14,8 +14,8 @@ function renderComponent(menu,prePath){
             var com={}
             com.c =  dynamic({
               app,
-              models: () => [import("../"+ item.mpath + ".js")],
-              component: () => import("../"+ item.cpath + ".js")
+              models: () => [import("./"+ item.mpath + ".js")],
+              component: () => import("./"+ item.cpath + ".js")
             })
           com.menuname=item.menuname
           arr.push({...com})
@@ -51,7 +51,7 @@ function f_getRoutes(com){
 };
 
 const menu = [
-	{menuname:'book/details/:id',cpath:'details/index'},
+	{menuname:'book/details/:id',cpath:'details/index',mpath:'model'},
 	]
   const ComArr = renderComponent(menu,"./");
 
@@ -61,7 +61,7 @@ class Book extends React.Component{
     super(props)
   }
   componentDidMount(){
-    console.log('didmount id',this.props.location.id)
+    // console.log('didmount id',this.props.location.id)
   }
   render(){
     return(
