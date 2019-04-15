@@ -8,11 +8,23 @@ class Message extends React.Component{
     super(props)
     this.state = {
     key: 'tab1',
-    noTitleKey: 'app',
+    tab1Data:[],
+    tab2Data:[],
+    tab3Data:[],
+    }
   }
+  componentDidMount(){
+    const {dispatch} = this.props;
+    dispatch({type:'selfs/getInvitedBookMsg'}).then(data=>{
+      if(data.code=='0'){
+        this.setState({tab1Data:data.data});
+      }
+    })
+
   }
 
   render(){
+    const {dispatch} = this.props
     const tabList = [{
   key: 'tab1',
   tab: '受邀',
@@ -59,7 +71,7 @@ const switchStatus = (status)=>{
 const contentList = {
   tab1: 
   <List 
-   dataSource={data1}
+   dataSource={this.state.tab1Data}
     pagination={{
       onChange: (page) => {
         console.log(page);
@@ -68,10 +80,10 @@ const contentList = {
     }}
    grid={{ gutter: 32, column: 2}}
    renderItem={item => (<List.Item style={{display:'flex',justifyContent:'space-between'}}>
-    <span>{item.fromUser}邀请您参与<Link to="/">《{item.bookname}》</Link>第{item.chapterNum}章的续写</span>
+    <span>{item.penName}邀请您参与<Link to="/">《{item.bookName}》</Link>第{item.num}章的续写</span>
    <span style={{display:'inline-block',float:'right'}}>
    {
-    item.status!=0?<span>{item.status==1?"已接受":"已拒绝"}</span>:<span><Button style={{marginRight:'10px'}} size="small">拒绝</Button><Button type="primary" size="small">接受</Button></span>
+    item.status!=2?<span>{item.status==1?"已接受":"已拒绝"}</span>:<span><Button style={{marginRight:'10px'}} size="small">拒绝</Button><Button type="primary" size="small">接受</Button></span>
    }
    
     </span>
@@ -82,10 +94,10 @@ const contentList = {
   />
   ,
   tab2:<List 
-   dataSource={data2}
+   dataSource={this.state.tab2Data}
    grid={{ gutter: 32, column: 2}}
    renderItem={item => (<List.Item style={{display:'flex',justifyContent:'space-between'}}>
-    <span>邀请{item.fromUser}参与<Link to="/">《{item.bookname}》</Link>第{item.chapterNum}章的续写</span>
+    <span>邀请{item.penName}参与<Link to="/">《{item.bookName}》</Link>第{item.num}章的续写</span>
     <span style={{display:'inline-block',float:'right'}}>状态：{switchStatus(item.status)}</span></List.Item>)}
   />,
    tab3: 
@@ -114,8 +126,25 @@ const contentList = {
   
 };
  const onTabChange = (key, type) => {
-    console.log(key, type);
+    switch (key) {
+      case 'tab2':
+        dispatch({type:'selfs/getInviteReply'}).then(data=>{
+          if(data.code=='0'){
+            this.setState({tab2Data:data.data})
+          }
+        })
+        break;
+        case 'tab3':
+        dispatch({type:'selfs/getFriendInvite'}).then(data=>{
+          if(data.code=='0'){
+            this.setState({tab3Data:data.data})
+          }
+        })
+        break;
+     
+    }
     this.setState({ [type]: key });
+
   }
 
   const data = [

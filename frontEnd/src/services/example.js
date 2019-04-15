@@ -41,6 +41,23 @@ export async function getIBChapter(param) {
     return request('/api/getIBChapter',{method:'get',data:param});
 }
 
+// 留言
+export async function sendMsg(param) {
+	// console.log("request",param)
+    return request('/api/sendMsg',{method:'post',data:param});
+}
+// 邀请写作
+export async function sendInvite(param) {
+	// console.log("request",param)
+    return request('/api/sendInvite',{method:'post',data:param});
+}
+// message获取书的受邀信息
+export async function getInvitedBookMsg(param) {
+	// console.log("request",param)
+    return request('/api/getInvitedBookMsg',{method:'get',data:param});
+}
+
+
 
 
 // 登录

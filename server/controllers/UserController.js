@@ -1,5 +1,21 @@
 const { query } = require('../mysql/mysql')
+const uuidv1 = require('uuid/v1');
+const uuidV4 = require('uuid/v4');
 
+function GetuuId(type){
+    var temp;
+    if(type=='time'){
+        temp = uuidv1();
+        temp = temp.split('-').join('');
+    }else{
+        temp = uuidV4();
+        temp = temp.split('-').join('');
+        
+
+    }
+        
+        return temp;
+}
 
 class UserController {
     // 登录函数
@@ -35,7 +51,7 @@ class UserController {
     }
     // 判断是否登录
     static async checkLogin(ctx,next){
-        console.log('sid',ctx.header.__sid)
+        // console.log('sid',ctx.header.__sid)
         if((ctx.header.__sid==='null') || (!ctx.session.__SID)  ){
            
            ctx.body={code:'404',msg:'/login'}
@@ -49,6 +65,63 @@ class UserController {
         ctx.session.__SID = null;
         ctx.body = {code:'0',message:'退出登录成功'}
     }
+    // 发送留言
+    static async sendMsg(ctx,next){
+        let {receiveId,content} = ctx.request.body
+        let transmitId = ctx.header.__sid;
+        let id = GetuuId("time");
+        let sql = `insert into tb_sp_message (id,transmitId,receiveId,content,create_date) values("${id}","${transmitId}","${receiveId}","${content}",now())`;
+        let result = await query( sql );
+        if(result){
+            ctx.body = {code:'0',message:'成功'}
+        }else{
+            ctx.body = {code:'1',message:'失败'} 
+        }
+        
+    }
+    // 发送邀请
+    static async sendInvite(ctx,next){
+        let {bookId,chapterNum,receiveId} = ctx.request.body
+        let transmitId = ctx.header.__sid;
+        let id = GetuuId("time");
+        let chapterId = GetuuId();
+        let sql = `insert into tb_sp_bookInvite (id,transmitId,receiveId,create_date,bookId,chapterId)
+        values("${id}","${transmitId}","${receiveId}",now(),"${bookId}","${chapterId}")
+        `
+        let result = await query( sql );
+        let sql1 = `insert into tb_sp_chapter (id,bookId,num,status) values("${chapterId}","${bookId}","${chapterNum}",2)`;
+        let result1 = await query( sql1 );
+        if(result&&result1){
+            ctx.body = {code:'0',message:'成功'} 
+        }else{
+            ctx.body = {code:'1',message:'失败'} 
+        }
+    }
+
+    // 登出函数
+    static async getInvitedBookMsg(ctx,next){
+        let id = ctx.header.__sid;
+        let sql = `select * from tb_sp_bookInvite where receiveId="${id}"`;
+        let result = await query( sql );
+        console.log('getInvitedBookMsg',result)
+        if(result.length>0){
+            let sql2 = `select C.penName,C.id as transmitId,A.bookName,B.num,B.status 
+            from tb_sp_user C join tb_sp_book A join tb_sp_chapter B on A.id = B.bookId 
+            where B.id="${result[0].chapterId}" and C.id = "${result[0].transmitId}" `;
+            let result2 = await query( sql2 );
+            if(result2.length>0){
+                ctx.body = {code:'0',message:'成功',data:result2} 
+            }else{
+            ctx.body = {code:'1',message:'失败'} 
+            }
+
+        }else{
+           ctx.body = {code:'0',message:'暂无邀请',data:[]}  
+        }
+    }
+
+    
+
     // 获取好友列表
     static async getFriends(ctx,next){
         let userId = ctx.header.__sid

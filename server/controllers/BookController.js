@@ -113,7 +113,7 @@ class BookController{
     	console.log('ctx.body',ctx.request.body)
     	let writerId = ctx.header.__sid;
         let updateType = ctx.request.body.type;//0新增书及第一章，1修改一个草稿，2新增某本书的一个章节
-        let status = ctx.request.body.status;//0草稿，1发表,2待新增
+        let status = ctx.request.body.status;//0草稿，1发表,2邀请中章节的status
         if(updateType==0){
         const {bookTitle,chapterTitle,content,status,num} = ctx.request.body;
         let bookId  = GetuuId();

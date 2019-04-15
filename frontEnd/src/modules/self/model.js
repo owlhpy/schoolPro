@@ -1,4 +1,4 @@
-import {checkLogin,bookSave,getChapter,getProducts,getFriends,getInviteBooks,getIBChapter} from '../../services/example'
+import {checkLogin,bookSave,getChapter,getProducts,getFriends,getInviteBooks,getIBChapter,sendInvite,sendMsg,getInvitedBookMsg} from '../../services/example'
 import {routerRedux} from 'dva/router'
 import {message} from 'antd'
 
@@ -39,21 +39,38 @@ export default{
             return products;
           }
       },
-      // friiend获取好友列表
+      // friend获取好友列表
       *getFriends({payload,callback},{call,put,select}){
           const data = yield call(getFriends,payload);
           return data;
       },
-      // friiend获取可选的书
+      // friend获取可选的书
       *getInviteBooks({payload,callback},{call,put,select}){
           const data = yield call(getInviteBooks,payload);
           return data;
       },
-       // friiend获取可选的书之后获取对应章节
+       // friend获取可选的书之后获取对应章节
       *getIBChapter({payload,callback},{call,put,select}){
           const data = yield call(getIBChapter,payload);
           return data;
-      }
+      },
+       // friend的留言
+      *sendMsg({payload,callback},{call,put,select}){
+          const data = yield call(sendMsg,payload);
+          return data;
+      },
+      // friend的邀请
+      *sendInvite({payload,callback},{call,put,select}){
+          const data = yield call(sendInvite,payload);
+          return data;
+      },
+      // message获取书的受邀信息
+      *getInvitedBookMsg({payload,callback},{call,put,select}){
+          const data = yield call(getInvitedBookMsg,payload);
+          return data;
+      },
+      
+      
       
       
 

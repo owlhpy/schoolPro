@@ -48,8 +48,24 @@ class FriendList extends React.Component {
         
       })
     }
-    const handleContent = form => {};
-    const handleInvite = form => {};
+    const handleContent = e => {
+       e.preventDefault();
+    this.props.form.validateFields((err, values) => {
+      if (!err) {
+        console.log('Received values of form: ', values);
+        dispatch({type:'selfs/sendMsg',payload:values})
+      }
+    });
+    };
+    const handleInvite = e => {
+       e.preventDefault();
+    this.props.form.validateFields((err, values) => {
+      if (!err) {
+        console.log('Received values of form: ', values);
+        dispatch({type:'selfs/sendInvite',payload:values})
+      }
+    });
+    };
     const { TextArea } = Input;
     return (
       <div>
@@ -74,7 +90,7 @@ class FriendList extends React.Component {
                         this.setState({
                           isShowInvite: true,
                           isShowContent: false,
-                          user: item.penName
+                          user: {penName:item.penName,receiveId:item.id}
                         });
                       dispatch({type:'selfs/getInviteBooks'}).then(data=>{
                         if(data.code=='0'){
@@ -93,7 +109,7 @@ class FriendList extends React.Component {
                         this.setState({
                           isShowContent: true,
                           isShowInvite: false,
-                          user: item.penName
+                          user: {penName:item.penName,receiveId:item.id}
                         });
                       }}
                     >
@@ -113,14 +129,19 @@ class FriendList extends React.Component {
           </Col>
           <Col span={6}>
             {this.state.isShowContent || this.state.isShowInvite ? (
-              <h4>To:{this.state.user}</h4>
+              <h4>To:{this.state.user.penName}</h4>
             ) : (
               ""
             )}
             {this.state.isShowContent ? (
               <Form style={{ width: "300px" }} onSubmit={handleContent}>
+                <Form.Item style={{display:'none'}}>
+                  {getFieldDecorator("receiveId", {
+                    initialValue:this.state.user.receiveId
+                  })(<Input hidden={true} />)}
+                </Form.Item>
                 <Form.Item label="留言内容">
-                  {getFieldDecorator("userName", {
+                  {getFieldDecorator("content", {
                     rules: [
                       { required: true, message: "Please input your username!" }
                     ]
@@ -141,7 +162,7 @@ class FriendList extends React.Component {
                   >
                     取消
                   </Button>
-                  <Button size="small" type="primary" onClick={handleContent}>
+                  <Button size="small" type="primary" htmlType="submit" onClick={handleContent}>
                     留言
                   </Button>
                 </Form.Item>
@@ -151,6 +172,11 @@ class FriendList extends React.Component {
             )}
             {this.state.isShowInvite&&this.state.inviteBooks.length>0&& (
               <Form style={{ width: "300px" }} onSubmit={handleInvite}>
+                <Form.Item style={{display:'none'}}>
+                  {getFieldDecorator("receiveId", {
+                    initialValue:this.state.user.receiveId
+                  })(<Input hidden={true} />)}
+                </Form.Item>
                 <Form.Item label="选择书本">
                   {getFieldDecorator("bookId", {
                     rules: [
@@ -172,11 +198,11 @@ class FriendList extends React.Component {
                   )}
                 </Form.Item>
                 <Form.Item label="章节">
-                  {getFieldDecorator("chapterId", {
+                  {getFieldDecorator("chapterNum", {
                     rules: [
                       { required: true, message: "Please input your username!" }
                     ],
-                    initialValue:"第"+this.state.chapterNum+"章"
+                    initialValue:this.state.chapterNum
                   })(<Input placeholder="章节" disabled />)}
                 </Form.Item>
                 <Form.Item style={{ paddingLeft: "50%" }}>
@@ -188,7 +214,7 @@ class FriendList extends React.Component {
                   >
                     取消
                   </Button>
-                  <Button type="primary">邀请</Button>
+                  <Button type="primary" htmlType="submit">邀请</Button>
                 </Form.Item>
               </Form>
             ) }

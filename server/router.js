@@ -15,9 +15,17 @@ router.post('/userSignup',UserController.userSignup)
 router.get('/logout',UserController.logout)
 // 获取好友列表
 router.get('/getFriends',UserController.getFriends)
+// 提交留言
+router.post('/sendMsg',UserController.sendMsg)
+// 提交邀请
+router.post('/sendInvite',UserController.sendInvite)
+// 获取书的邀请信息
+router.get('/getInvitedBookMsg',UserController.getInvitedBookMsg)
+
+
 // 获取可邀请的书
 router.get('/getInviteBooks',BookController.getInviteBooks)
-// 获取可邀请的书
+// 获取可邀请的书的章节
 router.get('/getIBChapter',BookController.getIBChapter)
 
 // 编辑章节，新建书
