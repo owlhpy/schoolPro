@@ -68,7 +68,7 @@ class Product extends React.Component{
    dataSource={this.state.editProd}
    grid={{ gutter: 32, column: 2}}
    renderItem={item => (<List.Item style={{display:'flex',justifyContent:'space-between'}}>
-    <span>{ `${item.bookname}第${item.chapterNum}章`}</span>
+    <span>{ `《${item.bookName}》第${item.chapterNum}章`}</span>
     <Button size="small" onClick = {()=>{handleWrite(item.bookId,item.chapterId,item.status)}} type="primary">去续写</Button>
     
     

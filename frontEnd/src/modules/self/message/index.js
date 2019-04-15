@@ -1,5 +1,5 @@
 import React from 'react'
-import { Card,List,Button} from 'antd';
+import { Card,List,Button,message} from 'antd';
 import {Link} from 'dva/router'
 import { connect } from "dva";
 
@@ -37,11 +37,16 @@ class Message extends React.Component{
   tab:'好友添加申请'
 }
 ];
-const data1 = [
-{id:1,fromUser:'hpy',fromUserid:11,bookid:22,bookname:"HelloWord",chapterid:3336,chapterNum:2,status:0},
-{id:2,fromUser:'hpy',fromUserid:11,bookid:12,bookname:"gggggg",chapterid:436,chapterNum:3,status:1},
-{id:3,fromUser:'hpy',fromUserid:11,bookid:92,bookname:"HddoWord",chapterid:336,chapterNum:6,status:2}
-]
+const handleInvite = (type,chapterId)=>{
+  dispatch({type:'selfs/saveInvite',payload:{status:type,chapterId:chapterId}}).then((data)=>{
+    if(data.code=='0'){
+      message.success('成功！');
+    }else{
+      message.error('出错')
+    }
+    
+  })
+}
 
 const data2 = [
 {id:1,toUser:'hpy',toUserId:111,bookname:'What',chapterid:233,chapterNum:2,status:0},
@@ -83,7 +88,7 @@ const contentList = {
     <span>{item.penName}邀请您参与<Link to="/">《{item.bookName}》</Link>第{item.num}章的续写</span>
    <span style={{display:'inline-block',float:'right'}}>
    {
-    item.status!=2?<span>{item.status==1?"已接受":"已拒绝"}</span>:<span><Button style={{marginRight:'10px'}} size="small">拒绝</Button><Button type="primary" size="small">接受</Button></span>
+    item.status!=2?<span>{item.status==0?"已接受":"已拒绝"}</span>:<span><Button style={{marginRight:'10px'}} size="small" onClick={()=>handleInvite(2,item.chapterId)}>拒绝</Button><Button type="primary" size="small" onClick={()=>handleInvite(1,item.chapterId)}>接受</Button></span>
    }
    
     </span>

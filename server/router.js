@@ -22,6 +22,8 @@ router.post('/sendInvite',UserController.sendInvite)
 // 获取书的邀请信息
 router.get('/getInvitedBookMsg',UserController.getInvitedBookMsg)
 
+// handle书的邀请
+router.post('/saveInvite',UserController.saveInvite)
 
 // 获取可邀请的书
 router.get('/getInviteBooks',BookController.getInviteBooks)

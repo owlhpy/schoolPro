@@ -89,7 +89,7 @@ class UserController {
         values("${id}","${transmitId}","${receiveId}",now(),"${bookId}","${chapterId}")
         `
         let result = await query( sql );
-        let sql1 = `insert into tb_sp_chapter (id,bookId,num,status) values("${chapterId}","${bookId}","${chapterNum}",2)`;
+        let sql1 = `insert into tb_sp_chapter (id,bookId,num,status,receiveWriterId) values("${chapterId}","${bookId}","${chapterNum}",2,"${receiveId}")`;
         let result1 = await query( sql1 );
         if(result&&result1){
             ctx.body = {code:'0',message:'成功'} 
@@ -97,17 +97,57 @@ class UserController {
             ctx.body = {code:'1',message:'失败'} 
         }
     }
+    // handle受邀写作
+    static async saveInvite(ctx,next){
+        let receiveId = ctx.header.__sid;
+        let {chapterId,status} = ctx.request.body;
+        var sql,result,result1;
+        if(status==2){
+            sql = `delete from tb_sp_chapter where id = "${chapterId}"`;
+            result = await query( sql );
+            if(result){
+            ctx.body={code:'0',msg:'成功'}
+        }else{
+            ctx.body={code:'1',msg:'出错'}
+        }
+        }else{
+            
+             sql = `update tb_sp_bookInvite set status=1 where receiveId="${receiveId}" and chapterId="${chapterId}"`
+             result = await query( sql );
+              let sql1 = `update tb_sp_chapter set status = 0,writerId="${receiveId}" where id="${chapterId}"`
+              result1 = await query( sql1 );
+              if(result&&result1){
+            ctx.body={code:'0',msg:'成功'}
+        }else{
+            ctx.body={code:'1',msg:'出错'}
+        }
+             
 
-    // 登出函数
+
+        }
+        
+
+        
+             
+
+
+
+
+    }
+
+    // 获取受邀写作信息
     static async getInvitedBookMsg(ctx,next){
         let id = ctx.header.__sid;
         let sql = `select * from tb_sp_bookInvite where receiveId="${id}"`;
         let result = await query( sql );
         console.log('getInvitedBookMsg',result)
+        let ids = result.map(item=>{
+            return item.chapterId;
+        }).toString();
         if(result.length>0){
-            let sql2 = `select C.penName,C.id as transmitId,A.bookName,B.num,B.status 
+            let sql2 = `select C.penName,C.id as transmitId,A.bookName,B.num,B.status,B.id as chapterId 
             from tb_sp_user C join tb_sp_book A join tb_sp_chapter B on A.id = B.bookId 
-            where B.id="${result[0].chapterId}" and C.id = "${result[0].transmitId}" `;
+            where FIND_IN_SET(B.id,"${ids}") and C.id = "${result[0].transmitId}" `;
             let result2 = await query( sql2 );
             if(result2.length>0){
                 ctx.body = {code:'0',message:'成功',data:result2} 

@@ -14,7 +14,7 @@ class FriendList extends React.Component {
       isShowInvite: false,
       user: null,
       inviteBooks:['0'],
-      chapterNum:1
+      chapterNum:null
     };
   }
   componentDidMount() {
@@ -95,7 +95,7 @@ class FriendList extends React.Component {
                       dispatch({type:'selfs/getInviteBooks'}).then(data=>{
                         if(data.code=='0'){
                           this.setState({inviteBooks:data.data})
-                          if(data.data.length==1){
+                          if(data.data.length>=1){
                             this.setState({chapterNum:data.data[0].chapterNum+1})
                           }
                         }

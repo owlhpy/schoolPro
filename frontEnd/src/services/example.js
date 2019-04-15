@@ -56,6 +56,13 @@ export async function getInvitedBookMsg(param) {
 	// console.log("request",param)
     return request('/api/getInvitedBookMsg',{method:'get',data:param});
 }
+// message获取书的受邀信息
+export async function saveInvite(param) {
+	// console.log("request",param)
+    return request('/api/saveInvite',{method:'post',data:param});
+}
+
+
 
 
 
