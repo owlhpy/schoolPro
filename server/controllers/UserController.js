@@ -49,6 +49,40 @@ class UserController {
         ctx.session.__SID = null;
         ctx.body = {code:'0',message:'退出登录成功'}
     }
+    // 获取好友列表
+    static async getFriends(ctx,next){
+        let userId = ctx.header.__sid
+        let sql= `select * from tb_sp_friendInvite where transmitId="${userId}" or receiveId = "${userId}"`
+        let result = await query( sql );
+        if(result.length>0){
+            let id = result.map(item=>{
+                if(item.status==1){
+                    if(item.transmitId!==userId){
+                        return item.transmitId
+                    }
+                    if(item.receiveId!==userId){
+                        return item.receiveId;
+                    }
+                }
+            })
+            
+            id= id.filter(item=>{return item!==undefined}).toString();
+            console.log('ids',id)
+            let sql3 = `select * from tb_sp_user where FIND_IN_SET(id,"${id}")`;
+            let result3 = await query( sql3 );
+            if(result3.length>0){
+               ctx.body = {code:'0',data:result3,msg:'成功'} 
+           }else{
+            ctx.body = {code:'1',msg:'查询出错'} 
+           }
+            
+
+        }else{
+            ctx.body = {code:'2',msg:'没有好友',data:[]} 
+        }
+
+        
+    }
     // replace(uuid(), '-', '')
 
 }

@@ -19,7 +19,12 @@ class Message extends React.Component{
 }, {
   key: 'tab2',
   tab: '邀请回复',
-}];
+},
+{
+  key:'tab3',
+  tab:'好友添加申请'
+}
+];
 const data1 = [
 {id:1,fromUser:'hpy',fromUserid:11,bookid:22,bookname:"HelloWord",chapterid:3336,chapterNum:2,status:0},
 {id:2,fromUser:'hpy',fromUserid:11,bookid:12,bookname:"gggggg",chapterid:436,chapterNum:3,status:1},
@@ -30,6 +35,12 @@ const data2 = [
 {id:1,toUser:'hpy',toUserId:111,bookname:'What',chapterid:233,chapterNum:2,status:0},
 {id:2,toUser:'hpy',toUserId:111,bookname:'What',chapterid:233,chapterNum:2,status:1},
 {id:3,toUser:'hpy',toUserId:111,bookname:'What',chapterid:233,chapterNum:2,status:2},
+
+]
+const data3 = [
+{id:1,toUser:'hpy',sendId:111,bookname:'What',chapterid:233,chapterNum:2,status:0},
+{id:2,toUser:'hpy',sendId:111,bookname:'What',chapterid:233,chapterNum:2,status:1},
+{id:3,toUser:'hpy',sendId:111,bookname:'What',chapterid:233,chapterNum:2,status:2},
 
 ]
 const switchStatus = (status)=>{
@@ -77,6 +88,30 @@ const contentList = {
     <span>邀请{item.fromUser}参与<Link to="/">《{item.bookname}》</Link>第{item.chapterNum}章的续写</span>
     <span style={{display:'inline-block',float:'right'}}>状态：{switchStatus(item.status)}</span></List.Item>)}
   />,
+   tab3: 
+  <List 
+   dataSource={data3}
+    pagination={{
+      onChange: (page) => {
+        console.log(page);
+      },
+      pageSize: 3,
+    }}
+   grid={{ gutter: 32, column: 2}}
+   renderItem={item => (<List.Item style={{display:'flex',justifyContent:'space-between'}}>
+    <span>{item.sendId}请求添加您为好友</span>
+   <span style={{display:'inline-block',float:'right'}}>
+   {
+    item.status!=0?<span>{item.status==1?"已接受":"已拒绝"}</span>:<span><Button style={{marginRight:'10px'}} size="small">拒绝</Button><Button type="primary" size="small">接受</Button></span>
+   }
+   
+    </span>
+    
+    
+    </List.Item>)
+}
+  />
+  
 };
  const onTabChange = (key, type) => {
     console.log(key, type);

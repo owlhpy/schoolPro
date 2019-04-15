@@ -13,6 +13,13 @@ router.get('/checkLogin',UserController.checkLogin)
 router.post('/userSignup',UserController.userSignup)
 // 登出
 router.get('/logout',UserController.logout)
+// 获取好友列表
+router.get('/getFriends',UserController.getFriends)
+// 获取可邀请的书
+router.get('/getInviteBooks',BookController.getInviteBooks)
+// 获取可邀请的书
+router.get('/getIBChapter',BookController.getIBChapter)
+
 // 编辑章节，新建书
 router.post('/bookSave',BookController.bookSave)
 // 获取作品

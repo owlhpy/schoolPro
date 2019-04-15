@@ -101,7 +101,7 @@ class Chapter extends React.Component {
 		      footer={<div style={{display:'flex',flexDirection:'row',justifyContent:'spaceBetween'}}><Button icon="eye" size="small" style={{backgroundColor:'transparent',border:'1px solid white',marginRight:'5px'}}>推荐</Button><Button size="small" icon="star" style={{backgroundColor:'transparent',border:'1px solid white'}}>收藏此书</Button></div>}
 		      bordered
 		      dataSource={bookMsg}
-		      renderItem={item => (<List.Item><Link to={`/details/chapter/${item.id}`}>{item.title}</Link></List.Item>)}
+		      renderItem={item => (<List.Item><Link to={`/book/details/${item.id}`}>{item.title}</Link></List.Item>)}
 		    />
     		</Col>
     			

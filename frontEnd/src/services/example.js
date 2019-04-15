@@ -24,6 +24,23 @@ export async function getBook(param) {
     return request('/api/getBook',{method:'get',data:param});
 }
 
+// 好友列表
+export async function getFriends(param) {
+	// console.log("request",param)
+    return request('/api/getFriends',{method:'get',data:param});
+}
+
+// 获取可邀请的书
+export async function getInviteBooks(param) {
+	// console.log("request",param)
+    return request('/api/getInviteBooks',{method:'get',data:param});
+}
+// 获取可邀请的书
+export async function getIBChapter(param) {
+	// console.log("request",param)
+    return request('/api/getIBChapter',{method:'get',data:param});
+}
+
 
 
 // 登录

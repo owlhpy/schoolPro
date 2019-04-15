@@ -1,12 +1,11 @@
-import {checkLogin,bookSave,getChapter,getProducts} from '../../services/example'
+import {checkLogin,bookSave,getChapter,getProducts,getFriends,getInviteBooks,getIBChapter} from '../../services/example'
 import {routerRedux} from 'dva/router'
 import {message} from 'antd'
 
 export default{
   namespace:'selfs',
   state:{
-    chapter:{},
-    products:{editProd:[],selfProd:[]}
+
   },
   effects:{
       // wrirte编辑章节、新增书
@@ -14,7 +13,7 @@ export default{
           const data = yield call(bookSave,payload)
           if(data.code==0){
             message.success("成功！")
-            routerRedux.push('/product');
+            // yield put(routerRedux.push('/product'));
           }
       },
       // selfs的index判断权限
@@ -40,6 +39,23 @@ export default{
             return products;
           }
       },
+      // friiend获取好友列表
+      *getFriends({payload,callback},{call,put,select}){
+          const data = yield call(getFriends,payload);
+          return data;
+      },
+      // friiend获取可选的书
+      *getInviteBooks({payload,callback},{call,put,select}){
+          const data = yield call(getInviteBooks,payload);
+          return data;
+      },
+       // friiend获取可选的书之后获取对应章节
+      *getIBChapter({payload,callback},{call,put,select}){
+          const data = yield call(getIBChapter,payload);
+          return data;
+      }
+      
+      
 
 
      
@@ -47,9 +63,7 @@ export default{
   },
   reducers:{
       querySuccess(state, action) {
-            return { ...state,
-                ...action.payload
-            }
+            return { ...state,...action.payload}
         }
   }
 }
