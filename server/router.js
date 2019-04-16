@@ -22,6 +22,10 @@ router.post('/sendInvite',UserController.sendInvite)
 // 获取书的邀请信息
 router.get('/getInvitedBookMsg',UserController.getInvitedBookMsg)
 
+// 获取邀请回复
+router.get('/getInviteReply',UserController.getInviteReply)
+// 获取好友邀请
+router.get('/getFriendInvite',UserController.getFriendInvite)
 
 // handle书的邀请
 router.post('/saveInvite',UserController.saveInvite)
@@ -39,6 +43,8 @@ router.get('/getProducts',BookController.getProducts)
 router.get('/getChapter',BookController.getChapter)
 // 获取某本书详情
 router.get('/getBook',BookController.getBook)
+
+
 
 // 获取所编辑的章节的信息
 router.get('/getEditChapter',BookController.getEditChapter)

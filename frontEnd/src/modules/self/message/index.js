@@ -103,7 +103,7 @@ const contentList = {
    dataSource={this.state.tab2Data}
    grid={{ gutter: 32, column: 2}}
    renderItem={item => (<List.Item style={{display:'flex',justifyContent:'space-between'}}>
-    <span>邀请{item.penName}参与<Link to="/">《{item.bookName}》</Link>第{item.num}章的续写</span>
+    <span>邀请{item.penName}参与<Link to="/">《{item.bookName}》</Link>第{item.chapterNum}章的续写</span>
     <span style={{display:'inline-block',float:'right'}}>状态：{switchStatus(item.status)}</span></List.Item>)}
   />,
    tab3: 
@@ -146,6 +146,13 @@ const contentList = {
             this.setState({tab3Data:data.data})
           }
         })
+        break;
+        case 'tab1':
+        dispatch({type:'selfs/getInvitedBookMsg'}).then(data=>{
+      if(data.code=='0'){
+        this.setState({tab1Data:data.data});
+      }
+       })
         break;
      
     }

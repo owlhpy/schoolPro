@@ -62,7 +62,13 @@ class FriendList extends React.Component {
     this.props.form.validateFields((err, values) => {
       if (!err) {
         console.log('Received values of form: ', values);
-        dispatch({type:'selfs/sendInvite',payload:values})
+        dispatch({type:'selfs/sendInvite',payload:values}).then(data=>{
+          if(data.code=='0'){
+            message.success("成功！")
+          }else{
+            message.error(data.msg);
+          }
+        })
       }
     });
     };

@@ -76,9 +76,11 @@ class Write extends React.Component {
        this.props.form.validateFields((err, values) => {
         if (!err) {
           values.content = this.state.text;
-          values.type = 1;//0新增，1修改
-          values.num = 1;
-          values.status = 1;//0草稿，1发表；
+          values.type = this.state.type;//0新增书及第一章，1修改一个草稿
+          if(this.state.type==0){
+            values.num=1;
+          }
+          values.status = 0;//0草稿，1发表,2待新增         
           console.log('Received values of form: ', values);
           dispatch({type:'selfs/bookSave',payload:values});
            

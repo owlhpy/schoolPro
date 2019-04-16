@@ -65,6 +65,25 @@ class UserController {
         ctx.session.__SID = null;
         ctx.body = {code:'0',message:'退出登录成功'}
     }
+    // 获取邀请回复
+    static async getInviteReply(ctx,next){
+        let transmitId = ctx.header.__sid;
+        let sql = `select S1.penName,S3.bookName,S2.chapterNum,S2.status,S2.create_date from 
+        tb_sp_user S1 left join tb_sp_bookInvite S2 on S2.receiveId=S1.id left join tb_sp_book S3 on S3.id=S2.bookId
+         where S2.transmitId="${transmitId}" order by S2.create_date desc;`
+        let result = await query( sql );
+        if(result.length>0){
+            ctx.body = {code:'0',message:'成功',data:result}
+        }else{
+            ctx.body = {code:'0',message:'暂无数据',data:[]}
+        }
+    }
+    // 获取好友申请
+    static async getFriendInvite(ctx,next){
+        ctx.session.__SID = null;
+        ctx.body = {code:'0',message:'退出登录成功'}
+    }
+    
     // 发送留言
     static async sendMsg(ctx,next){
         let {receiveId,content} = ctx.request.body

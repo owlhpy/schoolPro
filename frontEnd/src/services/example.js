@@ -68,6 +68,17 @@ export async function getEditChapter(param) {
     return request('/api/getEditChapter',{method:'get',data:param});
 }
 
+// message获取邀请回复
+export async function getInviteReply(param) {
+	// console.log("request",param)
+    return request('/api/getInviteReply',{method:'get',data:param});
+}
+// message获取好友邀请
+export async function getFriendInvite(param) {
+	// console.log("request",param)
+    return request('/api/getFriendInvite',{method:'get',data:param});
+}
+
 
 
 

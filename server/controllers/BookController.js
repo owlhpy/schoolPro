@@ -54,7 +54,7 @@ class BookController{
         let result = await query( sql );
         let bookId = result[0].bookId;
         let userId = result[0].writerId;
-        let sql2 = `select * from tb_sp_chapter where bookId = "${bookId}" order by num`
+        let sql2 = `select * from tb_sp_chapter where bookId = "${bookId}" and status=1 order by num`
         let result2 = await query( sql2 );
         let sql3 = `select * from tb_sp_user where id="${userId}"`;
         let result3 = await query( sql3 );
@@ -65,7 +65,7 @@ class BookController{
         	ctx.body = {code:'1',msg:'错误'}
         }	
     }
-    // 某个章节的详情页
+    // write的某个章节的修改
     static async getEditChapter(ctx,next){
         // console.log('I come here')
         const {chapterId,bookId} = ctx.query;
@@ -155,7 +155,7 @@ class BookController{
         }else{
             console.log('i come to update chapter')
         	let {bookTitle,chapterTitle,content,status,num,bookId,chapterId} = ctx.request.body;
-        	let sql2 = `update tb_sp_chapter set content="${content}",title="${chapterTitle}",status=1 where id = "${chapterId}";`
+        	let sql2 = `update tb_sp_chapter set content="${content}",title="${chapterTitle}",status="${status}" where id = "${chapterId}";`
             let result2 = await query( sql2 );
         	if(status==1&&result2){        		 
                  let sql1 = `update tb_sp_book set chapterNum=${num},isInvite=0 where id = "${bookId}"`;
