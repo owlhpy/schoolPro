@@ -62,6 +62,14 @@ export async function saveInvite(param) {
     return request('/api/saveInvite',{method:'post',data:param});
 }
 
+// message获取书的受邀信息
+export async function getEditChapter(param) {
+	// console.log("request",param)
+    return request('/api/getEditChapter',{method:'get',data:param});
+}
+
+
+
 
 
 

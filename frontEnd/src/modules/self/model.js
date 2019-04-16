@@ -1,4 +1,4 @@
-import {checkLogin,bookSave,getChapter,getProducts,getFriends,getInviteBooks,getIBChapter,sendInvite,saveInvite,sendMsg,getInvitedBookMsg} from '../../services/example'
+import {checkLogin,bookSave,getChapter,getProducts,getFriends,getInviteBooks,getIBChapter,sendInvite,getEditChapter,saveInvite,sendMsg,getInvitedBookMsg} from '../../services/example'
 import {routerRedux} from 'dva/router'
 import {message} from 'antd'
 
@@ -73,6 +73,11 @@ export default{
       *saveInvite({payload,callback},{call,put,select}){
           const data = yield call(saveInvite,payload);
           return data;
+      },
+      // message handle书的邀请
+      *getEditChapter({payload,callback},{call,put,select}){
+          const data = yield call(getEditChapter,payload);
+          return data.data;
       },
       
       

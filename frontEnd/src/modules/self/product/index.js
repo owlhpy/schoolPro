@@ -20,45 +20,12 @@ class Product extends React.Component{
 	render(){
     const {disaptch,history,match,selfs} = this.props;
     const {products} = selfs
-    const handleWrite = (bookId,chapterId,status)=>{
+    const handleWrite = (bookId,chapterId)=>{
       console.log('bookId,chapterId',bookId,chapterId);
-      //0草稿，1发表,2待新增
-      switch (status) {
-        case 0:
-           history.push(`/self/write/${bookId}-${chapterId}`)
-          break;
-        case 2:
-           history.push(`/self/write/${bookId}`);
-        break;
-      }
+      history.push(`/self/write/${bookId}-${chapterId}`)
       
     }
-    const data1 = [
-{id:1,fromUser:'hpy',fromUserid:11,bookId:22,bookname:"HelloWord",chapterId:3336,chapterNum:2,status:1},
-{id:2,fromUser:'hpy',fromUserid:11,bookId:12,bookname:"gggggg",chapterId:436,chapterNum:3,status:1},
-{id:3,fromUser:'hpy',fromUserid:11,bookId:92,bookname:"HddoWord",chapterId:336,chapterNum:6,status:2}
-]
-
-		const daily = [
-  { chapternum:3,
-    desc:"测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试",
-    collection:12,
-    id:1,
-    recommend:10,
-    bookname:"OWLHPY",
-    img:"one.png",
-    bookid:1
-  },
- { chapternum:3,
-    desc:"测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试",
-    collection:12,
-    id:2,
-    recommend:10,
-    bookname:"TestBookTestBook",
-    img:"one.png",
-    bookid:2
-  }
-  ]
+    
 		return(
 			<div>
       <h2>待续写作品</h2>
@@ -69,7 +36,7 @@ class Product extends React.Component{
    grid={{ gutter: 32, column: 2}}
    renderItem={item => (<List.Item style={{display:'flex',justifyContent:'space-between'}}>
     <span>{ `《${item.bookName}》第${item.chapterNum}章`}</span>
-    <Button size="small" onClick = {()=>{handleWrite(item.bookId,item.chapterId,item.status)}} type="primary">去续写</Button>
+    <Button size="small" onClick = {()=>{handleWrite(item.bookId,item.chapterId)}} type="primary">去续写</Button>
     
     
     </List.Item>)
