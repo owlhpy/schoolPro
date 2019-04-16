@@ -84,14 +84,12 @@ class UserController {
         let {bookId,chapterNum,receiveId} = ctx.request.body
         let transmitId = ctx.header.__sid;
         let id = GetuuId("time");
-        let chapterId = GetuuId();
-        let sql = `insert into tb_sp_bookInvite (id,transmitId,receiveId,create_date,bookId,chapterId)
-        values("${id}","${transmitId}","${receiveId}",now(),"${bookId}","${chapterId}")
-        `
+        let sql = `insert into tb_sp_bookInvite (id,transmitId,receiveId,create_date,bookId,chapterNum)
+        values("${id}","${transmitId}","${receiveId}",now(),"${bookId}","${chapterNum}") `
         let result = await query( sql );
-        let sql1 = `insert into tb_sp_chapter (id,bookId,num,status,receiveWriterId) values("${chapterId}","${bookId}","${chapterNum}",2,"${receiveId}")`;
-        let result1 = await query( sql1 );
-        if(result&&result1){
+        let sql2 = `update tb_sp_book set isInvite=1 where id = "${bookId}"`
+        let result2 = await query( sql2 );
+        if(result&&result2){
             ctx.body = {code:'0',message:'成功'} 
         }else{
             ctx.body = {code:'1',message:'失败'} 
@@ -100,23 +98,28 @@ class UserController {
     // handle受邀写作
     static async saveInvite(ctx,next){
         let receiveId = ctx.header.__sid;
-        let {chapterId,status} = ctx.request.body;
-        var sql,result,result1;
+        let {bookId,status,chapterNum} = ctx.request.body;
+        let chapterId = GetuuId('time');
+        
+        // 拒绝
         if(status==2){
-            sql = `delete from tb_sp_chapter where id = "${chapterId}"`;
-            result = await query( sql );
-            if(result){
+           let sql = `update tb_sp_bookInvite set status=2 where bookId="${bookId}" and receiveId="${receiveId}" and status=0`;
+           let result = await query( sql );
+           let sql2 = `update tb_sp_book set isInvite=0 where id="${bookId}"`;
+           let result2 = await query( sql2 );
+            if(result&&result2){
             ctx.body={code:'0',msg:'成功'}
         }else{
-            ctx.body={code:'1',msg:'出错'}
+            ctx.body={code:'1',msg:'拒绝出错'}
         }
         }else{
-            
-             sql = `update tb_sp_bookInvite set status=1 where receiveId="${receiveId}" and chapterId="${chapterId}"`
-             result = await query( sql );
-              let sql1 = `update tb_sp_chapter set status = 0,writerId="${receiveId}" where id="${chapterId}"`
-              result1 = await query( sql1 );
-              if(result&&result1){
+            let sql = `update tb_sp_bookInvite set status=1 where bookId="${bookId}" and receiveId="${receiveId}" and status=0`;
+           let result = await query( sql );
+            let sql2 = `update tb_sp_book set isInvite=0,currentWriter="${receiveId}" where id="${bookId}"`;
+           let result2 = await query( sql2 );
+            let sql3 = `insert into tb_sp_chapter (id,writerId,num,bookId,create_date) values("${chapterId}","${receiveId}","${chapterNum}","${bookId}",now())`
+          let result3 = await query( sql3 );
+              if(result&&result2&&result3){
             ctx.body={code:'0',msg:'成功'}
         }else{
             ctx.body={code:'1',msg:'出错'}
@@ -137,26 +140,13 @@ class UserController {
 
     // 获取受邀写作信息
     static async getInvitedBookMsg(ctx,next){
-        let id = ctx.header.__sid;
-        let sql = `select * from tb_sp_bookInvite where receiveId="${id}"`;
+        let receiveId = ctx.header.__sid;
+        let sql = `select S1.id as bookId,S2.chapterNum,S1.bookName,S2.status,S3.penName,S3.id as transmitId from tb_sp_book S1 join tb_sp_bookInvite S2 on S1.id = S2.bookId join tb_sp_user S3 on S2.transmitId = S3.id where S2.receiveId = "${receiveId}" and S2.status=0`;
         let result = await query( sql );
-        console.log('getInvitedBookMsg',result)
-        let ids = result.map(item=>{
-            return item.chapterId;
-        }).toString();
         if(result.length>0){
-            let sql2 = `select C.penName,C.id as transmitId,A.bookName,B.num,B.status,B.id as chapterId 
-            from tb_sp_user C join tb_sp_book A join tb_sp_chapter B on A.id = B.bookId 
-            where FIND_IN_SET(B.id,"${ids}") and C.id = "${result[0].transmitId}" `;
-            let result2 = await query( sql2 );
-            if(result2.length>0){
-                ctx.body = {code:'0',message:'成功',data:result2} 
-            }else{
-            ctx.body = {code:'1',message:'失败'} 
-            }
-
+            ctx.body = {code:'0',msg:"成功",data:result}
         }else{
-           ctx.body = {code:'0',message:'暂无邀请',data:[]}  
+            ctx.body = {code:'0',msg:"暂无数据",data:[]}
         }
     }
 

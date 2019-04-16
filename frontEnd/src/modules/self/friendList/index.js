@@ -13,7 +13,7 @@ class FriendList extends React.Component {
       isLiveMsg: false,
       isShowInvite: false,
       user: null,
-      inviteBooks:['0'],
+      inviteBooks:[],
       chapterNum:null
     };
   }
@@ -109,7 +109,7 @@ class FriendList extends React.Component {
                         this.setState({
                           isShowContent: true,
                           isShowInvite: false,
-                          user: {penName:item.penName,receiveId:item.id}
+                          user: {penName:item.penName,receiveId:item.id,chapterNum:item.chapterNum+1}
                         });
                       }}
                     >
@@ -154,7 +154,8 @@ class FriendList extends React.Component {
                       this.setState({ isShowContent: false, user: null });
                       dispatch({ type: "selfs/getInviteBooks" }).then(data => {
                         if (data.code == "0") {
-                          this.setState({inviteBooks:data.data});
+                          data.data.length>0?this.setState({inviteBooks:data.data}):this.setState({inviteBooks:[]})
+                          
                         }
                       });
                     }}
@@ -177,15 +178,22 @@ class FriendList extends React.Component {
                     initialValue:this.state.user.receiveId
                   })(<Input hidden={true} />)}
                 </Form.Item>
+                <Form.Item style={{display:'none'}}>
+                  {getFieldDecorator("chapterNum", {
+                    initialValue:this.state.user.chapterNum
+                  })(<Input hidden={true} />)}
+                </Form.Item>
                 <Form.Item label="选择书本">
                   {getFieldDecorator("bookId", {
                     rules: [
                       { required: true, message: "Please input your username!" },                
                     ],
-                    initialValue:inviteBooks.length>0?inviteBooks[0].id:undefined
+                    initialValue:inviteBooks.length>0?inviteBooks[0].id:null
                   })(
                     <Select
                     onSelect = {handleSelect}
+                    placeholder="暂无书可选"
+                    disabled={this.state.inviteBooks.length>0?false:true}
                     >
                       {this.state.inviteBooks.map(item => {
                         return (

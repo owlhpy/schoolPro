@@ -37,8 +37,8 @@ class Message extends React.Component{
   tab:'好友添加申请'
 }
 ];
-const handleInvite = (type,chapterId)=>{
-  dispatch({type:'selfs/saveInvite',payload:{status:type,chapterId:chapterId}}).then((data)=>{
+const handleInvite = (type,bookId,chapterNum)=>{
+  dispatch({type:'selfs/saveInvite',payload:{status:type,bookId:bookId,chapterNum:chapterNum}}).then((data)=>{
     if(data.code=='0'){
       message.success('成功！');
     }else{
@@ -85,10 +85,11 @@ const contentList = {
     }}
    grid={{ gutter: 32, column: 2}}
    renderItem={item => (<List.Item style={{display:'flex',justifyContent:'space-between'}}>
-    <span>{item.penName}邀请您参与<Link to="/">《{item.bookName}》</Link>第{item.num}章的续写</span>
+    <span>{item.penName}邀请您参与<Link to="/">《{item.bookName}》</Link>第{item.chapterNum}章的续写</span>
    <span style={{display:'inline-block',float:'right'}}>
    {
-    item.status!=2?<span>{item.status==0?"已接受":"已拒绝"}</span>:<span><Button style={{marginRight:'10px'}} size="small" onClick={()=>handleInvite(2,item.chapterId)}>拒绝</Button><Button type="primary" size="small" onClick={()=>handleInvite(1,item.chapterId)}>接受</Button></span>
+    item.status!=0?<span>{item.status==1?"已接受":"已拒绝"}</span>:<span><Button style={{marginRight:'10px'}} size="small" onClick={()=>handleInvite(2,item.bookId,item.chapterNum)}>拒绝</Button>
+    <Button type="primary" size="small" onClick={()=>handleInvite(1,item.bookId,item.chapterNum)}>接受</Button></span>
    }
    
     </span>
