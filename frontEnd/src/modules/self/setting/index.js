@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from "dva";
 import {
-  Form, Icon, Input, Button, Checkbox,DatePicker,Row,Col,Select
+  Form, Icon, Input, Button, Checkbox,DatePicker,Row,Col,Select,message
 } from 'antd';
 import moment from 'moment';
 moment.locale('zh-cn');
@@ -9,6 +9,7 @@ moment.locale('zh-cn');
 
 const FormItem = Form.Item;
 const { Option } = Select;
+const { TextArea } = Input;
 
 const { MonthPicker} = DatePicker;
 
@@ -16,24 +17,41 @@ const { MonthPicker} = DatePicker;
 class Form1 extends React.Component{
   constructor(props){
     super(props)
-    this.state={isEdit:false}
+    this.state={isEdit:false,data:{}}
+  }
+  componentDidMount(){
+    const {data} = this.props;
+    this.setState({data:data.data})
+    
   }
 
 
   render(){
-    const {form,data} = this.props
+    const {form,dispatch,data} = this.props
     const handleClick = ()=>{
       this.setState({isEdit:true})
     }
      const handleCancel = ()=>{
       this.setState({isEdit:false})
-      form.setFieldsValue({penName:data.penName,userName:data.nickName,birthday:moment(data.birthday, 'YYYY/MM'),gender:data.sex})
+      form.setFieldsValue({penName:data.penName,nickName:data.nickName,gender:data.sex})
     }
     const handleSubmit = (e) => {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
         console.log('Received values of form: ', values);
+        if(values.desc){
+          values.desc = values.desc.trim();
+        }
+        
+        // values.gender = parseInt(values.gender);
+        dispatch({type:'selfs/saveSelfMsg',payload:values}).then(data=>{
+          if(data.code=='0'){
+            message.success('成功！')
+          }else{
+            message.error('出错！')
+          }
+        })
       }
     });
   }
@@ -78,11 +96,11 @@ class Form1 extends React.Component{
           <h2>基本信息</h2>
               <Form layout="inline" onSubmit={handleSubmit}>
         <FormItem label="昵称">
-          {form.getFieldDecorator('userName', {
+          {form.getFieldDecorator('nickName', {
             rules: [{ required: true, message: 'Please input your username!' }],
             initialValue:data.nickName
           })(
-            <Input placeholder="Username" disabled={this.state.isEdit?false:true}/>
+            <Input placeholder="Username" disabled={true}/>
           )}
         </FormItem>
         <FormItem label="笔名">
@@ -93,30 +111,31 @@ class Form1 extends React.Component{
             <Input placeholder="PenName" disabled={this.state.isEdit?false:true}/>
           )}
         </FormItem>
-        <FormItem label="生日">
-          {form.getFieldDecorator('birthday', {
-            rules: [{ required: true, message: 'Please input your username!' }],
-            initialValue:moment(data.birthday, 'YYYY/MM')
-          })(
-             <MonthPicker format="YYYY/MM" style={{width:'100%'}} disabled={this.state.isEdit?false:true}/>
-          )}
-        </FormItem>
+
          <Form.Item
           label="性别"
         >
           {form.getFieldDecorator('gender', {
             rules: [{ required: true, message: 'Please select your gender!' }],
-            initialValue:data.sex
+            initialValue:data.gender
           })(
             <Select
               placeholder="性别"
               disabled={this.state.isEdit?false:true}
             >
-              <Option value="male" key="male">男</Option>
-              <Option value="female" key="female">女</Option>
+              <Option value={0} key="male">男</Option>
+              <Option value={1} key="female">女</Option>
             </Select>
           )}
         </Form.Item>
+        <FormItem label="个人描述">
+          {form.getFieldDecorator('description', {
+            initialValue:data.description
+          })(
+            <TextArea disabled={this.state.isEdit?false:true} placeholder="个人描述" autosize={{ minRows: 2, maxRows: 6 }} />
+
+          )}
+        </FormItem>
         <WrapperBtn />
 
       </Form>
@@ -139,19 +158,49 @@ class Form2 extends React.Component{
     this.state={isEdit:false}
   }
   render(){
-    const {form} = this.props
+    const {form,history,dispatch} = this.props
      const handleClick = ()=>{
-      this.setState({isEdit:true})
+      this.setState({isEdit:true,confirmDirty: false})
     }
      const handleCancel = ()=>{
       this.setState({isEdit:false})
       form.setFieldsValue({newpwd:null,repwd:null})
     }
+    const compareToFirstPassword = (rule, value, callback) => {
+      const form = this.props.form;
+      if (value && value !== form.getFieldValue("newpwd")) {
+        callback("两次输入的密码不一致！");
+      } else {
+        callback();
+      }
+    };
+
+    const validateToNextPassword = (rule, value, callback) => {
+      const form = this.props.form;
+      if (value && this.state.confirmDirty) {
+        form.validateFields(["repwd"], { force: true });
+      }
+      callback();
+    };
+    const handleConfirmBlur = e => {
+      const value = e.target.value;
+      this.setState({ confirmDirty: this.state.confirmDirty || !!value });
+    };
     const handleSubmit = (e) => {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
         console.log('Received values of form: ', values);
+         dispatch({type:'selfs/editPwd',payload:values}).then(data=>{
+          if(data.code=='0'){
+            message.success('成功！请重新登录')
+            dispatch({type:'selfs/logout'});
+            history.push("/login")
+          }else{
+            message.error('出错！')
+          }
+        })
+
       }
     });
   }
@@ -195,20 +244,46 @@ class Form2 extends React.Component{
 
           <h2>修改密码</h2>
               <Form layout="inline" onSubmit={handleSubmit}>
-        <FormItem label="新密码">
-          {form.getFieldDecorator('newpwd', {
-            rules: [{ required: true, message: 'Please input your username!' }],
-          })(
-            <Input placeholder="pwd" disabled={this.state.isEdit?false:true} />
-          )}
-        </FormItem>
-        <FormItem label="确认密码">
-          {form.getFieldDecorator('repwd', {
-            rules: [{ required: true, message: 'Please input your username!' }],
-          })(
-            <Input placeholder="pwd" disabled={this.state.isEdit?false:true} />
-          )}
-        </FormItem>
+      
+         <FormItem>
+            {form.getFieldDecorator("newpwd", {
+              rules: [
+                { required: true, message: "密码不能为空" },
+                {
+                  validator: validateToNextPassword
+                }
+              ]
+            })(
+              <Input
+                prefix={
+                  <Icon type="lock" style={{ color: "rgba(0,0,0,.25)" }} />
+                }
+                type="password"
+                placeholder="密码"
+                disabled={this.state.isEdit?false:true}
+              />
+            )}
+          </FormItem>
+          <FormItem>
+            {form.getFieldDecorator("repwd", {
+              rules: [
+                { required: true, message: "密码不能为空" },
+                {
+                  validator: compareToFirstPassword
+                }
+              ]
+            })(
+              <Input
+                prefix={
+                  <Icon type="lock" style={{ color: "rgba(0,0,0,.25)" }} />
+                }
+                type="password"
+                onBlur={handleConfirmBlur}
+                placeholder="确认密码"
+                disabled={this.state.isEdit?false:true}
+              />
+            )}
+          </FormItem>
        <WrapperBtn />
 
       </Form>
@@ -229,15 +304,26 @@ const WrapperFormPwd = Form.create()(Form2);
 class Setting extends React.Component{
 	constructor(props){
 		super(props)
+    this.state={data:{}}
 	}
+   componentDidMount(){
+    const {dispatch} = this.props;
+
+    console.log('dispatch',dispatch)
+    dispatch({type:'selfs/getSelfMsg'}).then(data=>{
+      if(data.code=='0'){
+        this.setState({data:data.data})
+      }
+    })
+  }
 
     render(){
-    	const { getFieldDecorator } = this.props.form;
-      const data1 = {sex:'female',nickName:'hpy',penName:'Owlhpy',birthday:'1997-2-20',isEdit:false}
-    	return(
+      const {dispatch,history} = this.props
+     
+         	return(
     	 <div>
-         <WrapperFormMsg data={data1} />
-         <WrapperFormPwd /> 
+         <WrapperFormMsg dispatch={dispatch} data={this.state.data} />
+         <WrapperFormPwd dispatch={dispatch} history={history}/> 
        </div>
     		)
     }
@@ -252,4 +338,4 @@ class Setting extends React.Component{
 // 		)
 // }
 
-export default connect(({selfs})=>({selfs}))(Form.create()(Setting))
+export default connect(({selfs})=>({selfs}))(Setting)

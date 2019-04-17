@@ -1,4 +1,4 @@
-import {getChapter,getBook} from '../../services/example'
+import {getChapter,getBook,getBookOpt,handleOpt,saveComments,handleLike} from '../../services/example'
 import {message} from 'antd'
 
 export default{
@@ -14,6 +14,27 @@ export default{
           const data = yield call(getBook,payload);
           return data;
       },
+       *getBookOpt({payload,callback},{call,put,select}){
+          const data = yield call(getBookOpt,payload);
+          return data;
+      },
+       *handleOpt({payload,callback},{call,put,select}){
+          const data = yield call(handleOpt,payload);
+          return data;
+      },
+    
+       *saveComments({payload,callback},{call,put,select}){
+          const data = yield call(saveComments,payload);
+          return data;
+      },
+       *handleLike({payload,callback},{call,put,select}){
+          const data = yield call(handleLike,payload);
+          return data;
+      },
+      
+      
+      
+      
       
      
 

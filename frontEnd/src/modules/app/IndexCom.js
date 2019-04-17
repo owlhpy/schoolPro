@@ -6,10 +6,14 @@ import { connect } from "dva";
 class IndexCom extends React.Component{
       constructor(props){
         super(props)
+        this.state = {data:[],daily:[]}
       }
 
       componentDidMount(){
-
+        const {dispatch} = this.props;
+        dispatch({type:'home/pageBooks'}).then(data=>{
+          this.setState({daily:data.data})
+        })
       }
 
       render(){
@@ -89,7 +93,7 @@ const gridStyle = {
 
          <List
     grid={{ gutter: 16, column: 3 }}
-    dataSource={daily}
+    dataSource={this.state.daily}
     renderItem={book => (
       <List.Item style={{textAlign:'center',borderBottom:'1px solid orange',boxShadow:'0px 1px -1px grey'}}>
        
@@ -97,22 +101,22 @@ const gridStyle = {
           <img src="/src/assets/images/aaa.jpg" style={{width:'100%',marginBottom:10}} />
           <h3>
           <Link 
-          to={'/book/123456'}>
-          {`《${book.bookname}》`}
+          to={'/book/'+book.id}>
+          {`《${book.bookName}》`}
           </Link>
           </h3>
           <List grid={{ gutter: 16, column: 3 }}>
             <List.Item>
               <Icon type="star" />收藏
-              <div style={{textAlign:'center',width:'100%'}}>{book.collection}</div>
+              <div style={{textAlign:'center',width:'100%'}}>{book.collections?book.collections:0}</div>
             </List.Item>
             <List.Item>
               <Icon type="eye" />推荐
-              <div style={{textAlign:'center',width:'100%'}}>{book.recommend}</div>
+              <div style={{textAlign:'center',width:'100%'}}>{book.recommends?book.recommends:0}</div>
             </List.Item>
             <List.Item>
               <Icon type="book" />章节
-              <div style={{textAlign:'center',width:'100%'}}>{book.chapternum}</div>
+              <div style={{textAlign:'center',width:'100%'}}>{book.chapterNum}</div>
             </List.Item>
           </List>  
       </List.Item>

@@ -18,6 +18,31 @@ export async function getProducts(param) {
     return request('/api/getProducts',{method:'get',data:param});
 }
 
+// 获取某本书的opt
+export async function getBookOpt(param) {
+	// console.log("request",param)
+    return request('/api/getBookOpt',{method:'get',data:param});
+}
+// 获取某本书的opt
+export async function handleOpt(param) {
+	// console.log("request",param)
+    return request('/api/handleOpt',{method:'get',data:param});
+}
+// 获章节点击喜欢
+export async function handleLike(param) {
+	// console.log("request",param)
+    return request('/api/handleLike',{method:'get',data:param});
+}
+
+// 提交章节评论
+export async function saveComments(param) {
+	// console.log("request",param)
+    return request('/api/saveComments',{method:'post',data:param});
+}
+
+
+
+
 // 获取某个作品作品
 export async function getBook(param) {
 	// console.log("request",param)
@@ -84,6 +109,32 @@ export async function getMessage(param) {
 	// console.log("request",param)
     return request('/api/getMsg',{method:'get',data:param});
 }
+
+// get个人资料
+export async function getSelfMsg(param) {
+	// console.log("request",param)
+    return request('/api/getSelfMsg',{method:'get',data:param});
+}
+
+// save个人资料
+export async function saveSelfMsg(param) {
+	// console.log("request",param)
+    return request('/api/saveSelfMsg',{method:'post',data:param});
+}
+// 更改密码
+export async function editPwd(param) {
+	// console.log("request",param)
+    return request('/api/editPwd',{method:'post',data:param});
+}
+// 获取首页的书
+export async function pageBooks(param) {
+	// console.log("request",param)
+    return request('/api/pageBooks',{method:'get',data:param});
+}
+
+
+
+
 
 
 

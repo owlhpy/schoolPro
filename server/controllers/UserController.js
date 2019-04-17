@@ -155,19 +155,47 @@ class UserController {
         }else{
             ctx.body={code:'1',msg:'出错'}
         }
-             
-
-
         }
-        
-
-        
-             
-
-
-
-
     }
+
+     // 获取个人资料
+    static async getSelfMsg(ctx,next){
+        let id = ctx.header.__sid;
+        let sql = `select * from tb_sp_user where id="${id}"`
+        let result = await query( sql );
+        if(result.length>0){
+            ctx.body = {code:'0',msg:"成功",data:result[0]}
+        }else{
+            ctx.body = {code:'1',msg:"出错"}
+        }
+    }
+    // 获取个人资料
+    static async saveSelfMsg(ctx,next){
+        let id = ctx.header.__sid;
+        let {gender,nickName,penName,description} = ctx.request.body;
+        // let sex = gender = parseInt(gender);
+        var sql,result;       
+         sql = `update tb_sp_user set penName="${penName}",description="${description}",gender=${gender} where id="${id}";`
+         result = await query( sql );      
+        if(result){
+            ctx.body = {code:'0',msg:"成功"}
+        }else{
+            ctx.body = {code:'1',msg:"出错"}
+        }
+    }
+    // 获取个人资料
+    static async editPwd(ctx,next){
+        let id = ctx.header.__sid;
+        let {newpwd} = ctx.request.body;
+        let sql = `update tb_sp_user set password="${newpwd}" where id="${id}"`
+        let result = await query( sql );
+        if(result){
+            ctx.body = {code:'0',msg:"成功"}
+        }else{
+            ctx.body = {code:'1',msg:"出错"}
+        }
+    }
+
 
     // 获取受邀写作信息
     static async getInvitedBookMsg(ctx,next){

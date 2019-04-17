@@ -1,4 +1,4 @@
-// import {getMenu,userLogin,test,getDaily} from '../../services/example'
+import {pageBooks} from '../../services/example'
 import {message} from 'antd'
 import {logout} from '../../services/example.js'
 import {routerRedux} from 'dva/router'
@@ -20,7 +20,11 @@ export default{
             // yield put({type:'querySuccess',payload:{user:{userName:null}}})
             yield put(routerRedux.push('/'))
           }
-      }  
+      },
+      *pageBooks({payload,callback},{call,put,select}){
+          const result = yield call(pageBooks,payload);
+          return result;
+      },
      
 
   },

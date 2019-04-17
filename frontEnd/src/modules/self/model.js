@@ -1,6 +1,7 @@
-import {checkLogin,bookSave,getChapter,getProducts,getFriends,getInviteBooks,getIBChapter,sendInvite,getMessage,getFriendInvite,getInviteReply,getEditChapter,saveInvite,sendMsg,getInvitedBookMsg} from '../../services/example'
+import {checkLogin,bookSave,getChapter,logout,getProducts,getFriends,getInviteBooks,getIBChapter,sendInvite,editPwd,saveSelfMsg,getSelfMsg,getMessage,getFriendInvite,getInviteReply,getEditChapter,saveInvite,sendMsg,getInvitedBookMsg} from '../../services/example'
 import {routerRedux} from 'dva/router'
 import {message} from 'antd'
+// import {routerRedux} from 'dva/router'
 
 export default{
   namespace:'selfs',
@@ -95,15 +96,29 @@ export default{
           return data;
       },
       
-
-      
-      
-      
-      
-      
-
-
-     
+        // get个人资料
+      *getSelfMsg({payload,callback},{call,put,select}){
+          const data = yield call(getSelfMsg,payload);
+          return data;
+      },
+        // save个人资料
+      *saveSelfMsg({payload,callback},{call,put,select}){
+          const data = yield call(saveSelfMsg,payload);
+          return data;
+      },
+       // 更改密码
+      *editPwd({payload,callback},{call,put,select}){
+          const data = yield call(editPwd,payload);
+          return data;
+      },
+      // 修改密码时登出
+      *logout({payload,callback},{call,put,select}){
+          const result = yield call(logout,payload)
+          if(result.code==0){          
+            sessionStorage.removeItem('__SID')
+          }
+      }
+          
 
   },
   reducers:{

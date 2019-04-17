@@ -36,7 +36,25 @@ router.get('/getInviteBooks',BookController.getInviteBooks)
 router.get('/getIBChapter',BookController.getIBChapter)
 // 获取留言信息
 router.get('/getMsg',UserController.getMsg)
+// 获取首页书籍信息
+router.get('/pageBooks',BookController.pageBooks)
+// 获取某本书的opt
+router.get('/getBookOpt',BookController.getBookOpt)
+// 获取某本书的opt
+router.get('/handleOpt',BookController.handleOpt)
+// 章节点击喜欢
+router.get('/handleLike',BookController.handleLike)
+// 提交 章节评论
+router.post('/saveComments',BookController.saveComments)
 
+
+
+// 保存个人资料的修改
+router.post('/saveSelfMsg',UserController.saveSelfMsg)
+// 保存个人资料的修改
+router.post('/editPwd',UserController.editPwd)
+// 获取个人资料
+router.get('/getSelfMsg',UserController.getSelfMsg)
 
 // 编辑章节，新建书
 router.post('/bookSave',BookController.bookSave)

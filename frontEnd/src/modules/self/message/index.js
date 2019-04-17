@@ -55,12 +55,6 @@ const handleInvite = (type,bookId,chapterNum)=>{
   })
 }
 
-const data2 = [
-{id:1,toUser:'hpy',toUserId:111,bookname:'What',chapterid:233,chapterNum:2,status:0},
-{id:2,toUser:'hpy',toUserId:111,bookname:'What',chapterid:233,chapterNum:2,status:1},
-{id:3,toUser:'hpy',toUserId:111,bookname:'What',chapterid:233,chapterNum:2,status:2},
-
-]
 const data3 = [
 {id:1,toUser:'hpy',sendId:111,bookname:'What',chapterid:233,chapterNum:2,status:0},
 {id:2,toUser:'hpy',sendId:111,bookname:'What',chapterid:233,chapterNum:2,status:1},

@@ -18,10 +18,119 @@ function GetuuId(type){
 }
 class BookController{
 	
-	
+	// 首页的书本信息
 	static async pageBooks(ctx,next){
+        let sql = `select bookName,t.recommends,t.collections,S3.id,S3.chapterNum from (select sum(recommends) as recommends,sum(collections) as collections,S1.id from tb_sp_book S1 join tb_sp_bookOpt S2 on S1.id=S2.bookId group by S1.id) t join tb_sp_book S3 on t.id = S3.id`;
+        let result = await query( sql );
+        if(result.length>0){
+            ctx.body = {code:'0',msg:'成功',data:result}
+        }else{
+             let sql = `select chapterNum,bookName,id from tb_sp_book `
+            let result = await query( sql );
+
+            ctx.body = {code:'0',msg:'成功但没有opt',data:result}
+        }
         
     }
+    
+    // 首页章节comments
+    static async saveComments(ctx,next){
+        let transmitId = ctx.header.__sid;
+        let {content,chapterId} = ctx.request.body;
+        let id = GetuuId("time");
+        let sql = `insert into tb_sp_comment (id,transmitId,content,chapterId,create_date) values("${id}","${transmitId}","${content}","${chapterId}",now())`
+        let result = await query( sql );
+        if(result){
+            ctx.body = {code:'0',msg:'成功'}
+        }else{
+            ctx.body = {code:'1',msg:'出错'}
+        }
+        
+    }
+    
+    // 查询某书的bookOpt
+    static async getBookOpt(ctx,next){  
+        let {id} = ctx.query;
+        let sql = `select t.recommends,t.collections,S3.chapterNum from (select sum(recommends) as recommends,sum(collections) as collections,S1.id from tb_sp_book S1 join tb_sp_bookOpt S2 on S1.id=S2.bookId group by S1.id) t join tb_sp_book S3 on t.id = S3.id where S3.id="${id}"`;
+        let result = await query( sql );
+        if(result.length>0){
+            ctx.body = {code:'0',msg:'成功',data:result[0]}
+        }else{
+             let sql = `select chapterNum from tb_sp_book where id= "${id}"`
+            let result = await query( sql );
+
+            ctx.body = {code:'0',msg:'暂无数据',data:{recommends:0,collections:0,chapterNum:result[0].chapterNum}}
+        }
+        
+    }
+    static async handleOpt(ctx,next){
+      let { type, bookId } = ctx.query;
+let transmitId = ctx.header.__sid;
+let sql1 = `select recommends,collections from tb_sp_bookOpt where transmitId = "${transmitId}" and bookId="${bookId}"`;
+let result1 = await query(sql1);
+console.log('result1',result1)
+if (result1.length>0) {
+  let sql, result;
+
+  if (type == 1 && result1[0].recommends==0) {
+    sql = `update tb_sp_bookOpt set recommends = 1 where transmitId = "${transmitId}" and bookId="${bookId}"`;
+    result = await query(sql);
+    if (result) {
+      ctx.body = { code: "0", msg: "成功" };
+    } else {
+      ctx.body = { code: "1", msg: "错误" };
+    }
+  } else if(type == 1 && result1[0].recommends==1) {
+    ctx.body = { code: "1", msg: "您已推荐过此书！" };
+  }
+  if (type == 0 && result1[0].collections == 0) {
+    sql = `update tb_sp_bookOpt set collections = 1 where transmitId = "${transmitId}" and bookId="${bookId}"`;
+    result = await query(sql);
+    if (result) {
+      ctx.body = { code: "0", msg: "成功" };
+    } else {
+      ctx.body = { code: "1", msg: "错误" };
+    }
+  } else if(type == 0 && result1[0].collections==1) {
+    ctx.body = { code: "1", msg: "您已收藏过此书！" };
+  }
+} else {
+  let sql, result;
+  if (type == 1) {
+    sql = `insert into tb_sp_bookOpt (transmitId,bookId,recommends,create_date) values("${transmitId}","${bookId}",1,now())`;
+    result = await query(sql);
+  } else {
+    sql = `insert into tb_sp_bookOpt (transmitId,bookId,collections,create_date) values("${transmitId}","${bookId}",1,now())`;
+    result = await query(sql);
+  }
+  if (result) {
+    ctx.body = { code: "0", msg: "成功" };
+  } else {
+    ctx.body = { code: "1", msg: "错误" };
+  }
+}
+
+    }
+
+   static async handleLike(ctx,next){
+    let {chapterId} = ctx.query
+    let transmitId = ctx.header.__sid;
+    let sql1 = `select likes from tb_sp_chapterOpt where transmitId = "${transmitId}" and chapterId="${chapterId}"`;
+    let result1 = await query(sql1);
+    if(result1.length>0){
+        ctx.body={code:'1',msg:'您已发表喜欢过这个章节！'}
+    }else{
+        let sql = `insert into tb_sp_chapterOpt (chapterId,transmitId,likes,create_date) values("${chapterId}","${transmitId}",1,now())`
+        let result = await query(sql);
+        if(result){
+            ctx.body = {code:'0',msg:'成功'}
+        }else{
+            ctx.body = {code:'1',msg:'出错'}
+        }
+    }
+
+   }
+    
     // 某本书的详情页
     static async getBook(ctx,next){
        const {bookId} = ctx.query;
@@ -57,10 +166,13 @@ class BookController{
         let sql2 = `select * from tb_sp_chapter where bookId = "${bookId}" and status=1 order by num`
         let result2 = await query( sql2 );
         let sql3 = `select * from tb_sp_user where id="${userId}"`;
-        let result3 = await query( sql3 );
-        console.log('result3',result3)   
+        let result3 = await query( sql3 ); 
+        let sql4 = `select penName,content,S1.create_date,pic from tb_sp_comment S1 join tb_sp_user S2 on S1.transmitId = S2.id where chapterId="${chapterId}"`
+        let result4 = await query( sql4 );
+        let sql5 = `select count(likes) as likes from tb_sp_chapterOpt where chapterId = "${chapterId}"`
+        let result5 = await query( sql5 );   
         if(result.length>0&&result2.length>0){
-        	ctx.body = {code:'0',msg:'成功',data:{bookMsg:result2,chapterMsg:result[0],userMsg:result3[0]}}
+        	ctx.body = {code:'0',msg:'成功',data:{bookMsg:result2,chapterMsg:result[0],userMsg:result3[0],comments:result4,likes:result5[0].likes}}
         }else{
         	ctx.body = {code:'1',msg:'错误'}
         }	

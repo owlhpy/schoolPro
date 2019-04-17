@@ -6,7 +6,7 @@ import { connect } from "dva";
 class IndexCom extends React.Component{
       constructor(props){
         super(props)
-        this.state = {chapterMsg:[],userMsg:[]}
+        this.state = {chapterMsg:[],userMsg:[],opt:{}}
       }
 
       componentDidMount(){
@@ -17,6 +17,11 @@ class IndexCom extends React.Component{
           if(data.code=='0'){
             console.log('data.data',data.data)
             this.setState({chapterMsg:data.data.chapterMsg,userMsg:data.data.userMsg});
+          }
+        })
+        dispatch({type:'book/getBookOpt',payload:{id:bookId}}).then(data=>{
+          if(data.code=='0'){
+            this.setState({opt:data.data})
           }
         })
         
@@ -80,15 +85,15 @@ class IndexCom extends React.Component{
                    <List grid={{ gutter:16, column: 3 }}>
             <List.Item>
               <h4><Icon type="star" theme="twoTone" twoToneColor="orange"/>收藏</h4>
-              <h4 style={{textAlign:'center',width:'100%'}}>{'10'}</h4>
+              <h4 style={{textAlign:'center',width:'100%'}}>{this.state.opt.collections}</h4>
             </List.Item>
             <List.Item>
               <h4><Icon type="eye" />推荐</h4>
-              <h4 style={{textAlign:'center',width:'100%'}}>{'10'}</h4>
+              <h4 style={{textAlign:'center',width:'100%'}}>{this.state.opt.recommends}</h4>
             </List.Item>
             <List.Item>
               <h4><Icon type="book"/>章节</h4>
-              <h4 style={{textAlign:'center',width:'100%'}}>{'10'}</h4>
+              <h4 style={{textAlign:'center',width:'100%'}}>{this.state.opt.chapterNum}</h4>
             </List.Item>
           </List>
                 </Col>
