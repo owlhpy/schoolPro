@@ -79,6 +79,13 @@ export async function getFriendInvite(param) {
     return request('/api/getFriendInvite',{method:'get',data:param});
 }
 
+// 获取留言
+export async function getMessage(param) {
+	// console.log("request",param)
+    return request('/api/getMsg',{method:'get',data:param});
+}
+
+
 
 
 

@@ -131,11 +131,11 @@ class Write extends React.Component {
                     rules: [{ required: true, message: '请输入标题!' }],
                     initialValue:chapter.bookName
                   })(
-                    <Input label="标题" placeholder="书名" disabled={chapter.length>0?true:false} />
+                    <Input label="标题" placeholder="书名" disabled={chapter.bookName?true:false} />
                   )}
           </Form.Item>
         
-          <Form.Item label={`章节标题（第${chapter.num}章)`}>
+          <Form.Item label={`章节标题（第${chapter.num?chapter.num:'1'}章)`}>
           {getFieldDecorator('chapterTitle', {
             rules: [{ required: true, message: '请输入标题!' }],
             initialValue:chapter.title
@@ -173,7 +173,7 @@ class Write extends React.Component {
            <ReactQuill value={this.state.text || ''}
                   onChange={this.handleChange}
                   modules={{toolbar:toolbarOptions}}
-                  style={{height:'50vh',marginBottom:'50px'}}
+                  style={{height:'50vh',marginBottom:'50px',backgroundColor:'white'}}
 
 
                    />

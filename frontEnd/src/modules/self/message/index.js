@@ -2,6 +2,7 @@ import React from 'react'
 import { Card,List,Button,message} from 'antd';
 import {Link} from 'dva/router'
 import { connect } from "dva";
+import moment from 'moment';
 
 class Message extends React.Component{
   constructor(props){
@@ -11,6 +12,7 @@ class Message extends React.Component{
     tab1Data:[],
     tab2Data:[],
     tab3Data:[],
+    msg:[]//留言
     }
   }
   componentDidMount(){
@@ -18,6 +20,11 @@ class Message extends React.Component{
     dispatch({type:'selfs/getInvitedBookMsg'}).then(data=>{
       if(data.code=='0'){
         this.setState({tab1Data:data.data});
+      }
+    })
+    dispatch({type:'selfs/getMessage'}).then(data=>{
+      if(data.code=='0'){
+        this.setState({msg:data.data});
       }
     })
 
@@ -205,7 +212,7 @@ const contentList = {
                   >
                      <List
     grid={{ gutter: 16, column: 4 }}
-    dataSource={data}
+    dataSource={this.state.msg}
      pagination={{
       onChange: (page) => {
         console.log(page);
@@ -214,10 +221,10 @@ const contentList = {
     }}
     renderItem={item => (
       <List.Item>
-        <Card title={item.userName}
+        <Card title={<span>来自<b>{item.penName}</b>的留言</span>}
           bodyStyle={{height:'120px',width:'100%',wordWrap:'break-word'}}
            headStyle={{height:'20px',fontSize:'14px'}}
-           actions={[<span>{item.dateTime}</span>]}
+           actions={[<span>{moment().format('YYYY-MM-DD h:mm:ss',item.create_date)}</span>]}
            >
         {item.content}
                

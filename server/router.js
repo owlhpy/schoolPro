@@ -34,6 +34,9 @@ router.post('/saveInvite',UserController.saveInvite)
 router.get('/getInviteBooks',BookController.getInviteBooks)
 // 获取可邀请的书的章节
 router.get('/getIBChapter',BookController.getIBChapter)
+// 获取留言信息
+router.get('/getMsg',UserController.getMsg)
+
 
 // 编辑章节，新建书
 router.post('/bookSave',BookController.bookSave)

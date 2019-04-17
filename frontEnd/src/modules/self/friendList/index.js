@@ -53,7 +53,13 @@ class FriendList extends React.Component {
     this.props.form.validateFields((err, values) => {
       if (!err) {
         console.log('Received values of form: ', values);
-        dispatch({type:'selfs/sendMsg',payload:values})
+        dispatch({type:'selfs/sendMsg',payload:values}).then(data=>{
+          if(data.code=='0'){
+            message.success('成功！')
+          }else{
+            message.error('出错！')
+          }
+        })
       }
     });
     };
@@ -158,12 +164,7 @@ class FriendList extends React.Component {
                     size="small"
                     onClick={() => {
                       this.setState({ isShowContent: false, user: null });
-                      dispatch({ type: "selfs/getInviteBooks" }).then(data => {
-                        if (data.code == "0") {
-                          data.data.length>0?this.setState({inviteBooks:data.data}):this.setState({inviteBooks:[]})
-                          
-                        }
-                      });
+                    
                     }}
                     style={{ marginRight: "10px" }}
                   >

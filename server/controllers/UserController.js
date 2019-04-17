@@ -80,9 +80,21 @@ class UserController {
     }
     // 获取好友申请
     static async getFriendInvite(ctx,next){
-        ctx.session.__SID = null;
-        ctx.body = {code:'0',message:'退出登录成功'}
+        let id = ctx.header.__sid;
     }
+     // 获取留言信息
+    static async getMsg(ctx,next){
+        let receiveId = ctx.header.__sid;
+        let sql = `select content,penName,S1.create_date from tb_sp_message S1 join tb_sp_user S2 on S1.transmitId=S2.id where receiveId="${receiveId}"`
+        let result = await query( sql );
+         if(result.length>0){
+            ctx.body = {code:'0',message:'成功',data:result}
+        }else{
+            ctx.body = {code:'0',message:'暂无数据',data:[]}
+        }
+    }
+      
+    
     
     // 发送留言
     static async sendMsg(ctx,next){
