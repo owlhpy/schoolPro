@@ -134,6 +134,7 @@ class FriendList extends React.Component {
                       <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
                     }
                     title={<a href="https://ant.design">{item.penName}</a>}
+                    description={item.description?item.description:''}
                   />
                 </List.Item>
               )}

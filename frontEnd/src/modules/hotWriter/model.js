@@ -1,4 +1,4 @@
-// import {getMenu,userLogin,test,getDaily} from '../../services/example'
+import {hotWriter,getWriterDetail,sendFriendInvite} from '../../services/example'
 import {message} from 'antd'
 
 export default{
@@ -7,9 +7,21 @@ export default{
     user:{userName:'hpy'}
   },
   effects:{
-      *getMenu({payload,callback},{call,put,select}){
-          console.log('OK')
-      } 
+      *hotWriter({payload,callback},{call,put,select}){
+          const data = yield call(hotWriter,payload);
+          return data;
+      },
+      *getWriterDetail({payload,callback},{call,put,select}){
+          const data = yield call(getWriterDetail,payload);
+          return data;
+      },
+      *sendFriendInvite({payload,callback},{call,put,select}){
+          const data = yield call(sendFriendInvite,payload);
+          return data;
+      },
+      
+       
+
      
 
   },

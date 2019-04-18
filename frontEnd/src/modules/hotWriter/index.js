@@ -59,11 +59,10 @@ const menu = [
 class HotWriter extends React.Component{
 	constructor(props){
 		super(props)
-
 	}
 	render(){
 		
-
+    const {history} = this.props
 		return(
 			<div>
 			
@@ -71,7 +70,7 @@ class HotWriter extends React.Component{
            <Route
             path={"/hotWriter"}
             exact
-            render={()=><IndexCom />}
+            render={()=><IndexCom history={history}/>}
            />
             {
                f_getRoutes(ComArr)

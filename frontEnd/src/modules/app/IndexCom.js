@@ -6,85 +6,23 @@ import { connect } from "dva";
 class IndexCom extends React.Component{
       constructor(props){
         super(props)
-        this.state = {data:[],daily:[]}
+        this.state = {data:[],daily:[],newBooks:[]}
       }
 
       componentDidMount(){
         const {dispatch} = this.props;
         dispatch({type:'home/pageBooks'}).then(data=>{
-          this.setState({daily:data.data})
+          this.setState({daily:data.data.daily,newBooks:data.data.newBooks})
         })
       }
 
       render(){
-          const data = [
-  {
-    title: '一个叫欧维的男人决定去死',
-    bookid:12
-  },
-  {
-    title: '十二国记',
-    bookid:13
-  },
-  {
-    title: '我的天才女友',
-    bookid:14
-  },
-  {
-    title: '人鼠之间',
-    bookid:15
-  },
-  {
-    title: '面纱',
-    bookid:166
-  },
-  {
-    title: 'GoGoGo',
-    bookid:157
-  },
-];
+        
 const gridStyle = {
   width: '33.3%',
   textAlign: 'center',
 };
- const daily = [
-  { chapternum:3,
-    desc:"测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试",
-    collection:12,
-    id:1,
-    recommend:10,
-    bookname:"OWLHPY",
-    img:"one.png",
-    bookid:1
-  },
- { chapternum:3,
-    desc:"测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试",
-    collection:12,
-    id:2,
-    recommend:10,
-    bookname:"TestBookTestBook",
-    img:"one.png",
-    bookid:2
-  },
-  { chapternum:3,
-    desc:"测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试",
-    collection:12,
-    id:3,
-    recommend:10,
-    bookname:"TestBook",
-    img:"one.png",
-    bookid:3
-  },
-  { chapternum:3,
-    desc:"测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试",
-    collection:12,
-    id:4,
-    recommend:10,
-    bookname:"OWLHPY",
-    img:"one.png",
-    bookid:4
-  }
-  ]
+
 
   const {home} = this.props
         return(
@@ -134,12 +72,12 @@ const gridStyle = {
                header={<span style={{fontFamily:'微软雅黑',fontSize:22,fontWeight:'bold'}}>新作推荐</span>}
                bordered={false}
             itemLayout="horizontal"
-            dataSource={data}
+            dataSource={this.state.newBooks}
             renderItem={item => (
               <List.Item style={{borderBottom:'1px dashed orange',textAlign:'center'}}>
                 <List.Item.Meta
                   // avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
-                  title={<Link to={`/details/${item.bookid}`}>{`《${item.title}》`}</Link>}
+                  title={<Link to={`/book/${item.id}`}>{`《${item.bookName}》`}</Link>}
                   // description="Ant Design, a design language for background applications, is refined by Ant UED Team"
                 />
               </List.Item>

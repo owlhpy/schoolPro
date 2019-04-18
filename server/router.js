@@ -22,6 +22,11 @@ router.post('/sendInvite',UserController.sendInvite)
 // 获取书的邀请信息
 router.get('/getInvitedBookMsg',UserController.getInvitedBookMsg)
 
+// 获取热门作者
+router.get('/hotWriter',UserController.hotWriter)
+// 获取作者详细信息
+router.get('/getWriterDetail',UserController.getWriterDetail)
+
 // 获取邀请回复
 router.get('/getInviteReply',UserController.getInviteReply)
 // 获取好友邀请

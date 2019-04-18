@@ -93,6 +93,34 @@ class UserController {
             ctx.body = {code:'0',message:'暂无数据',data:[]}
         }
     }
+
+     // 热门作者
+    static async hotWriter(ctx,next){
+        let sql=" select penName,S3.id,nickName,gender,birthday from tb_sp_user S3 join (select count(likes) as likes,S2.writerId  from tb_sp_chapteropt S1 join tb_sp_chapter S2 on S1.chapterId = S2.id GROUP BY S1.chapterId ORDER BY likes desc) S4 on S3.id = S4.writerId"
+        let result = await query( sql );
+         if(result.length>0){
+            ctx.body = {code:'0',message:'成功',data:result}
+        }else{
+            ctx.body = {code:'0',message:'暂无数据',data:[]}
+        }
+    }
+
+    // 获取单个作者详情
+    static async getWriterDetail(ctx,next){
+        let {writerId} = ctx.query;
+        let sql=`select * from tb_sp_user where id= "${writerId}"`;
+        let result = await query( sql );
+        let sql1 = `select S1.num,S2.bookName,S2.id,S2.pic from tb_sp_chapter S1 join tb_sp_book S2 on S1.bookId=S2.id where S1.writerId="${writerId}" and S1.status=1`;
+        let result1 = await query( sql1 );
+         if(result.length>0&&result1.length>0){
+            ctx.body = {code:'0',message:'成功',data:{bookMsg:result1,selfMsg:result[0]}}
+        }else{
+            ctx.body = {code:'0',message:'暂无数据',data:{bookMsg:[],selfMsg:result[0]}}
+        }
+    }
+    
+
+    
       
     
     

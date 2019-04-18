@@ -40,6 +40,26 @@ export async function saveComments(param) {
     return request('/api/saveComments',{method:'post',data:param});
 }
 
+// 获取热门作者
+export async function hotWriter(param) {
+	// console.log("request",param)
+    return request('/api/hotWriter',{method:'get',data:param});
+}
+// 获取单个作者详情
+export async function getWriterDetail(param) {
+	// console.log("request",param)
+    return request('/api/getWriterDetail',{method:'get',data:param});
+}
+// 发送好友邀请
+export async function sendFriendInvite(param) {
+	// console.log("request",param)
+    return request('/api/sendFriendInvite',{method:'get',data:param});
+}
+
+
+
+
+
 
 
 

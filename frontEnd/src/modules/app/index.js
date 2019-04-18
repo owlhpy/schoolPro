@@ -63,7 +63,7 @@ const App = ({home,dispatch,location})=>{
 	{menuname:'hotWriter',cpath:'hotWriter/index',mpath:'hotWriter/model'},
 	{menuname:'login',cpath:'login/index',mpath:'login/model'},
 	{menuname:'signup',cpath:'signup/index',mpath:'signup/model'},
-	{menuname:'writer',cpath:'writer/index',mpath:'writer/model'},
+	{menuname:'writer/:id',cpath:'hotWriter/details',mpath:'hotWriter/model'},
 	{menuname:'setting',cpath:'setting/index',mpath:'setting/model'},
   {menuname:'self',cpath:'self/index',mpath:'self/model'},
 	]

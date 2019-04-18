@@ -22,20 +22,27 @@ class BookController{
 	static async pageBooks(ctx,next){
         let sql = `select bookName,t.recommends,t.collections,S3.id,S3.chapterNum from (select sum(recommends) as recommends,sum(collections) as collections,S1.id from tb_sp_book S1 join tb_sp_bookOpt S2 on S1.id=S2.bookId group by S1.id) t join tb_sp_book S3 on t.id = S3.id`;
         let result = await query( sql );
+        let sql2 = `select bookName,id from tb_sp_book order by create_date desc limit 5`
+        let result2 = await query( sql2 );
         if(result.length>0){
-            ctx.body = {code:'0',msg:'成功',data:result}
+            ctx.body = {code:'0',msg:'成功',data:{daily:result,newBooks:result2}}
         }else{
              let sql = `select chapterNum,bookName,id from tb_sp_book `
             let result = await query( sql );
 
-            ctx.body = {code:'0',msg:'成功但没有opt',data:result}
+            ctx.body = {code:'0',msg:'成功但没有opt',data:{daily:result,newBooks:result2}}
         }
         
     }
     
     // 首页章节comments
     static async saveComments(ctx,next){
-        let transmitId = ctx.header.__sid;
+        if((ctx.header.__sid==='null') || (!ctx.session.__SID)  ){
+           
+           ctx.body={code:'1',msg:'请登录再进行操作！'}
+           // ctx.redirect('/login');
+        }else{
+            let transmitId = ctx.header.__sid;
         let {content,chapterId} = ctx.request.body;
         let id = GetuuId("time");
         let sql = `insert into tb_sp_comment (id,transmitId,content,chapterId,create_date) values("${id}","${transmitId}","${content}","${chapterId}",now())`
@@ -45,6 +52,9 @@ class BookController{
         }else{
             ctx.body = {code:'1',msg:'出错'}
         }
+
+        }
+        
         
     }
     
@@ -64,8 +74,17 @@ class BookController{
         
     }
     static async handleOpt(ctx,next){
-      let { type, bookId } = ctx.query;
-let transmitId = ctx.header.__sid;
+         // console.log('ctx.path',ctx.path)
+          if((ctx.header.__sid==='null') || (!ctx.session.__SID)  ){
+           
+           ctx.body={code:'1',msg:'请登录再进行操作！'}
+           // ctx.redirect('/login');
+        }else{
+
+                let { type, bookId } = ctx.query;
+      let transmitId = ctx.header.__sid;
+      console.log('transmitId',transmitId)
+    
 let sql1 = `select recommends,collections from tb_sp_bookOpt where transmitId = "${transmitId}" and bookId="${bookId}"`;
 let result1 = await query(sql1);
 console.log('result1',result1)
@@ -110,10 +129,18 @@ if (result1.length>0) {
   }
 }
 
+        }
+  
+
     }
 
    static async handleLike(ctx,next){
-    let {chapterId} = ctx.query
+    if((ctx.header.__sid==='null') || (!ctx.session.__SID)  ){
+           
+           ctx.body={code:'1',msg:'请登录再进行操作！'}
+           // ctx.redirect('/login');
+        }else{
+              let {chapterId} = ctx.query
     let transmitId = ctx.header.__sid;
     let sql1 = `select likes from tb_sp_chapterOpt where transmitId = "${transmitId}" and chapterId="${chapterId}"`;
     let result1 = await query(sql1);
@@ -128,6 +155,9 @@ if (result1.length>0) {
             ctx.body = {code:'1',msg:'出错'}
         }
     }
+
+        }
+  
 
    }
     

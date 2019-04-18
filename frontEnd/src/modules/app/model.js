@@ -17,6 +17,7 @@ export default{
           if(result.code==0){
             message.success("成功")           
             sessionStorage.removeItem('__SID')
+            sessionStorage.removeItem('userId')
             // yield put({type:'querySuccess',payload:{user:{userName:null}}})
             yield put(routerRedux.push('/'))
           }

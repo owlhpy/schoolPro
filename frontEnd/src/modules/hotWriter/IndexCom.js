@@ -2,33 +2,32 @@ import {List,Popover,Avatar,Row,Col} from 'antd'
 import {Link} from 'dva/router'
 import React from 'react'
 import { connect } from "dva";
+import moment from 'moment';
 
 class IndexCom extends React.Component{
       constructor(props){
         super(props)
+        this.state={writers:[]}
       }
 
-      componentDidMount(){
-        let temp = window.location.pathname.split('/');
-        // console.log(temp)
-        if(temp.length>2){
-          console.log(temp[temp.length-1])
-        }
+       componentDidMount(){
+        const {dispatch} = this.props;
+        dispatch({type:'hotWriter/hotWriter'}).then(data=>{
+          if(data.code=='0'){
+            this.setState({writers:data.data});
+          }
+        })
       }
 
       render(){
-          const dataSource = [
-    {id:1,title:"Neo",sex:1,book:'ahhahhhahhh'},
-    {id:2,title:"Neo",sex:1,book:'ahhahhhahhh'},
-    {id:3,title:"Neo",sex:1,book:'ahhahhhahhh'},
-    {id:4,title:"Neo",sex:1,book:'ahhahhhahhh'},
-    {id:11,title:"Neo",sex:1,book:'ahhahhhahhh'},
-    {id:21,title:"Neo",sex:1,book:'ahhahhhahhh'},
-    {id:31,title:"Neo",sex:1,book:'ahhahhhahhh'},
-    {id:41,title:"Neo",sex:1,book:'ahhahhhahhh'}
-    ]
-    const handleClick = ()=>{
-      console.log('ok')
+        const {history} = this.props
+        console.log('this.props',this.props)
+        const {writers} = this.state
+
+
+       
+    const handleClick = (id)=>{
+      history.push(`/writer/${id}`)
     }
 
     const books = [{id:112,title:'One',author:'Neo'},{id:12,title:'Two',author:'Neo'},{id:182,title:'AAA',author:'Neo'},{id:812,title:'OnDBBe',author:'Neo'}]
@@ -36,40 +35,32 @@ class IndexCom extends React.Component{
     <div>
      <List grid={{ gutter: 16, column: 4 }}>
       {
-        dataSource.map(item=>{
+        writers.map(item=>{
           return (
+            <Popover key={item.id} content={<div>
+              <p>昵称:{`《${item.nickName}》`}</p>
+              <p>wt生旦日:{`${moment().format('YYYY-MM-DD',item.create_date)}`}</p>
+              <p>性别：{item.gender==1?'男':'女'}</p>             
+              <a onClick={()=>handleClick(item.id)}>查看作品</a>
+              </div>} title={item.penName} trigger="hover"
+              placement="topLeft"
+              >
+              
             <List.Item key={item.id} style={{textAlign:'left'}}>
-            <Popover content={<div>
-              <p>性别：{item.sex==1?'男':'女'}</p>
-              <p>代表作:{`《${item.book}》`}</p>
-              <p onClick={handleClick}>更多作品</p>
-              </div>} title="Title" trigger="hover">
               <Avatar size={64} icon="user" />
-              <span>{item.title}</span>
-              </Popover>
+              <span>{item.penName}</span>
+              
               </List.Item>
+              </Popover>
               )
         })
       }
       </List>
-      {
-        books?<List grid={{ gutter: 16, column: 4 }} header={<div>{books[0].author}</div>}>
-      {
-        books.map(item=>{
-          return(
-            <List.Item key={item.id}>
-                          <Link to={'/writer/123'}>《{item.title}》</Link>
-                  </List.Item>
-            )
-        })
-      }
-      
-      </List>:''
-      }
+     
                 </div>
     )
       }
 }
 
 
-export default connect(({ book }) => ({ book }))(IndexCom);
+export default connect(({ hotWriter }) => ({ hotWriter }))(IndexCom);

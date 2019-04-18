@@ -1,27 +1,43 @@
+import React from 'react'
 import {Menu,Layout,Button,Icon,Dropdown,Input} from 'antd'
 import {Link,routerRedux} from 'dva/router'
 import "../../assets/css/index.css";
 const { Header} = Layout;
 const Search = Input.Search;
 
-const IndexMenu = ()=>{
-	 return (
-      
+
+class IndexMenu extends React.Component{
+  constructor(props){
+    super(props)
+    this.state={key:'daily'}
+  }
+  componentDidMount(){
+     let temp = window.location.pathname.split("/");
+     let path = temp[temp.length - 1];
+    if(path.indexOf('hotWriter')>=0){
+        this.setState({key:'hotWriter'})
+    }
+  }
+  render(){
+   
+     return (      
       <Menu
         mode="horizontal"
         style={{ backgroundColor: "transparent" }}
-        selectedKeys={["daily"]}
+        defaultSelectedKeys={[this.state.key]}
       >
         <Menu.Item key="daily">
           <Link to="/">首页</Link>
         </Menu.Item>
-        <Menu.Item key="discuss">
+        <Menu.Item key="hotWriter">
           <Link to="/hotWriter">热门作者</Link>
         </Menu.Item>
       </Menu>
    
     );
+  }
 }
+
 
 const LoginBtn = ({dispatch,user})=>{
 	 const menu = (
