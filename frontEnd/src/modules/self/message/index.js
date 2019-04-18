@@ -34,10 +34,10 @@ class Message extends React.Component{
     const {dispatch} = this.props
     const tabList = [{
   key: 'tab1',
-  tab: '受邀',
+  tab: '受邀写作通知',
 }, {
   key: 'tab2',
-  tab: '邀请回复',
+  tab: '写作邀请回复',
 },
 {
   key:'tab3',
@@ -48,6 +48,26 @@ const handleInvite = (type,bookId,chapterNum)=>{
   dispatch({type:'selfs/saveInvite',payload:{status:type,bookId:bookId,chapterNum:chapterNum}}).then((data)=>{
     if(data.code=='0'){
       message.success('成功！');
+       dispatch({type:'selfs/getInvitedBookMsg'}).then(data=>{
+      if(data.code=='0'){
+        this.setState({tab1Data:data.data});
+      }
+       })
+    }else{
+      message.error('出错')
+    }
+    
+  })
+}
+const handleFriendInvite=(type,transmitId)=>{
+  dispatch({type:'selfs/saveFriendInvite',payload:{type:type,transmitId:transmitId}}).then((data)=>{
+    if(data.code=='0'){
+      message.success('成功！');
+      dispatch({type:'selfs/getFriendInvite'}).then(data=>{
+          if(data.code=='0'){
+            this.setState({tab3Data:data.data})
+          }
+        })
     }else{
       message.error('出错')
     }
@@ -55,12 +75,6 @@ const handleInvite = (type,bookId,chapterNum)=>{
   })
 }
 
-const data3 = [
-{id:1,toUser:'hpy',sendId:111,bookname:'What',chapterid:233,chapterNum:2,status:0},
-{id:2,toUser:'hpy',sendId:111,bookname:'What',chapterid:233,chapterNum:2,status:1},
-{id:3,toUser:'hpy',sendId:111,bookname:'What',chapterid:233,chapterNum:2,status:2},
-
-]
 const switchStatus = (status)=>{
   switch(status){
     case 0:
@@ -78,12 +92,6 @@ const contentList = {
   tab1: 
   <List 
    dataSource={this.state.tab1Data}
-    pagination={{
-      onChange: (page) => {
-        console.log(page);
-      },
-      pageSize: 3,
-    }}
    grid={{ gutter: 32, column: 2}}
    renderItem={item => (<List.Item style={{display:'flex',justifyContent:'space-between'}}>
     <span>{item.penName}邀请您参与<Link to="/">《{item.bookName}》</Link>第{item.chapterNum}章的续写</span>
@@ -109,20 +117,16 @@ const contentList = {
   />,
    tab3: 
   <List 
-   dataSource={data3}
-    pagination={{
-      onChange: (page) => {
-        console.log(page);
-      },
-      pageSize: 3,
-    }}
+   dataSource={this.state.tab3Data}
    grid={{ gutter: 32, column: 2}}
    renderItem={item => (<List.Item style={{display:'flex',justifyContent:'space-between'}}>
-    <span>{item.sendId}请求添加您为好友</span>
+    <span>{item.penName}请求添加您为好友</span>
    <span style={{display:'inline-block',float:'right'}}>
    {
-    item.status!=0?<span>{item.status==1?"已接受":"已拒绝"}</span>:<span><Button style={{marginRight:'10px'}} size="small">拒绝</Button><Button type="primary" size="small">接受</Button></span>
+    item.status!==0?<span>{item.status==2?'已拒绝':'已接受'}</span>: <span><Button style={{marginRight:'10px'}} size="small" onClick={()=>handleFriendInvite(2,item.transmitId)}>拒绝</Button><Button type="primary" size="small" onClick={()=>handleFriendInvite(1,item.transmitId)}>接受</Button></span>
    }
+  
+   
    
     </span>
     
@@ -161,29 +165,6 @@ const contentList = {
 
   }
 
-  const data = [
-  {
-    userName: 'Title 1',
-    content:'sklajfksdjfkalsdkjfasdjfalsfjdskjfalfjsdkjfksdjfid',
-    dateTime:'2017-2-20 11:33:50'
-  },
-  {
-    userName: 'Title 2',
-    content:'sklajfksdjfkalsdkjfasdjfalsfjdskjfalfjsdkjfksdjfid',
-    dateTime:'2017-2-20 11:33:50'
-  },
-  {
-    userName: 'Title 3',
-    content:'sklajfksdjfkalsdkjfasdjfalsfjdskjfalfjsdkjfksdjfid',
-    dateTime:'2017-2-20 11:33:50'
-  },
-  {
-    userName: 'Title 4',
-    content:'sklajfksdjfkalsdkjfasdjfalsfjdskjfalfjsdkjfksdjfid',
-    dateTime:'2017-2-20 11:33:50'
-  },
-];
-
     return(
       <div>
     
@@ -207,12 +188,6 @@ const contentList = {
                      <List
     grid={{ gutter: 16, column: 4 }}
     dataSource={this.state.msg}
-     pagination={{
-      onChange: (page) => {
-        console.log(page);
-      },
-      pageSize: 4,
-    }}
     renderItem={item => (
       <List.Item>
         <Card title={<span>来自<b>{item.penName}</b>的留言</span>}

@@ -27,7 +27,7 @@ class Form1 extends React.Component{
 
 
   render(){
-    const {form,dispatch,data} = this.props
+    const {form,dispatch,data,handleChange} = this.props
     const handleClick = ()=>{
       this.setState({isEdit:true})
     }
@@ -48,6 +48,12 @@ class Form1 extends React.Component{
         dispatch({type:'selfs/saveSelfMsg',payload:values}).then(data=>{
           if(data.code=='0'){
             message.success('成功！')
+            dispatch({type:'selfs/getSelfMsg'}).then(data=>{
+      if(data.code=='0'){
+        handleChange(data.data)
+        this.setState({isEdit:false})
+      }
+    })
           }else{
             message.error('出错！')
           }
@@ -318,11 +324,17 @@ class Setting extends React.Component{
   }
 
     render(){
+      console.log('rerender')
       const {dispatch,history} = this.props
+      const this1 = this;
+      const handleChange=(data)=>{
+        console.log('I come  handleChange')
+        this1.setState({data:data})
+      }
      
          	return(
     	 <div>
-         <WrapperFormMsg dispatch={dispatch} data={this.state.data} />
+         <WrapperFormMsg dispatch={dispatch} data={this.state.data} handleChange={handleChange} />
          <WrapperFormPwd dispatch={dispatch} history={history}/> 
        </div>
     		)

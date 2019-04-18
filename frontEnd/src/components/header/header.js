@@ -94,7 +94,7 @@ const LoginBtn = ({dispatch,user})=>{
 }
 
 
-const WrapperHeader = ({dispatch,user})=>{
+const WrapperHeader = ({dispatch,user,history})=>{
 	return (
 		<Header className="header">
           <div>
@@ -105,8 +105,8 @@ const WrapperHeader = ({dispatch,user})=>{
           </div>
           <div>
             <Search
-              placeholder="input search text"
-              onSearch={value => console.log(value)}
+              placeholder="搜索书名或作者名"
+              onSearch={value =>{history.push("/search/"+value)}}
               style={{ width: 200 }}
             />
           </div>

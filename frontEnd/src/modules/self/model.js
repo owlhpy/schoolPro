@@ -1,4 +1,7 @@
-import {checkLogin,bookSave,getChapter,logout,getProducts,getFriends,getInviteBooks,getIBChapter,sendInvite,editPwd,saveSelfMsg,getSelfMsg,getMessage,getFriendInvite,getInviteReply,getEditChapter,saveInvite,sendMsg,getInvitedBookMsg} from '../../services/example'
+import {checkLogin,bookSave,getChapter,logout,getProducts,
+  getFriends,getInviteBooks,getIBChapter,sendInvite,editPwd,saveSelfMsg,getSelfMsg,
+  getMessage,getFriendInvite,getInviteReply,getEditChapter,saveInvite,saveFriendInvite,
+  sendMsg,getInvitedBookMsg} from '../../services/example'
 import {routerRedux} from 'dva/router'
 import {message} from 'antd'
 // import {routerRedux} from 'dva/router'
@@ -12,10 +15,7 @@ export default{
       // wrirte编辑章节、新增书
       *bookSave({payload,callback},{call,put,select}){
           const data = yield call(bookSave,payload)
-          if(data.code==0){
-            message.success("成功！")
-            // yield put(routerRedux.push('/product'));
-          }
+          return data;
       },
       // selfs的index判断权限
       *checkLogin({payload,callback},{call,put,select}){
@@ -45,6 +45,14 @@ export default{
           const data = yield call(getFriends,payload);
           return data;
       },
+      // handle好友添加邀请
+      *saveFriendInvite({payload,callback},{call,put,select}){
+          const data = yield call(saveFriendInvite,payload);
+          return data;
+      },
+      
+
+      
       // friend获取可选的书
       *getInviteBooks({payload,callback},{call,put,select}){
           const data = yield call(getInviteBooks,payload);

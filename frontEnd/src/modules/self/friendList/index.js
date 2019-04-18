@@ -56,6 +56,7 @@ class FriendList extends React.Component {
         dispatch({type:'selfs/sendMsg',payload:values}).then(data=>{
           if(data.code=='0'){
             message.success('成功！')
+            this.setState({isShowContent:false})
           }else{
             message.error('出错！')
           }
@@ -71,6 +72,7 @@ class FriendList extends React.Component {
         dispatch({type:'selfs/sendInvite',payload:values}).then(data=>{
           if(data.code=='0'){
             message.success("成功！")
+            this.setState({isShowInvite:false})
           }else{
             message.error(data.msg);
           }

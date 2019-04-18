@@ -70,7 +70,12 @@ class Chapter extends React.Component {
           console.log("Received values of form: ", values);
           dispatch({type:"book/saveComments",payload:{chapterId:chapterId,content:values.content}}).then(data=>{
             if(data.code=='0'){
-              message.success("操作成功")
+              message.success("操作成功!")
+                dispatch({type:'book/getRefresh',payload:{chapterId:chapterId,type:'comments'}}).then(data=>{
+                if(data.code=='0'){
+                  this.setState({comments:data.data})
+                }
+              })
             }else{
               message.error(data.msg)
             }
@@ -94,6 +99,11 @@ class Chapter extends React.Component {
           }).then(data=>{
              if (data.code == "0") {
               message.success("成功");
+              dispatch({type:'book/getRefresh',payload:{chapterId:chapterId,type:'like'}}).then(data=>{
+                if(data.code=='0'){
+                  this.setState({likes:data.data})
+                }
+              })
             } else {
               message.error(data.msg);
             }
@@ -135,14 +145,14 @@ class Chapter extends React.Component {
             <Card
               title={
                 <h1>
-                  {`${chapterMsg.bookName}——`}
-                  <small>{`第${chapterMsg.num}章`}</small>
+                  {`${chapterMsg.bookName?chapterMsg.bookName:''}——`}
+                  <small>{`第${chapterMsg.num?chapterMsg.num:''}章`}</small>
                 </h1>
               }
               extra={
                 <div>
                   <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
-                  {userMsg.penName}
+                  {userMsg.penName?userMsg.penName:''}
                 </div>
               }
               actions={[
@@ -152,7 +162,7 @@ class Chapter extends React.Component {
                 </div>
               ]}
             >
-              <h2>{chapterMsg.title}</h2>
+              <h2>{chapterMsg.title?chapterMsg.title:''}</h2>
               <div
                 dangerouslySetInnerHTML={{
                   __html: chapterMsg.content

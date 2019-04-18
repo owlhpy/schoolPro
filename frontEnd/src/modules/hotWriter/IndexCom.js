@@ -30,7 +30,7 @@ class IndexCom extends React.Component{
       history.push(`/writer/${id}`)
     }
 
-    const books = [{id:112,title:'One',author:'Neo'},{id:12,title:'Two',author:'Neo'},{id:182,title:'AAA',author:'Neo'},{id:812,title:'OnDBBe',author:'Neo'}]
+ 
        return(
     <div>
      <List grid={{ gutter: 16, column: 4 }}>
@@ -38,9 +38,9 @@ class IndexCom extends React.Component{
         writers.map(item=>{
           return (
             <Popover key={item.id} content={<div>
-              <p>昵称:{`《${item.nickName}》`}</p>
+              <p>昵称:{`${item.nickName}`}</p>
               <p>wt生旦日:{`${moment().format('YYYY-MM-DD',item.create_date)}`}</p>
-              <p>性别：{item.gender==1?'男':'女'}</p>             
+              <p>性别：{item.gender==0?'男':'女'}</p>             
               <a onClick={()=>handleClick(item.id)}>查看作品</a>
               </div>} title={item.penName} trigger="hover"
               placement="topLeft"

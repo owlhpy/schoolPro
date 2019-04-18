@@ -57,6 +57,8 @@ class BookController{
         
         
     }
+
+
     
     // 查询某书的bookOpt
     static async getBookOpt(ctx,next){  
@@ -183,6 +185,21 @@ if (result1.length>0) {
         };
           
     }
+    // 搜索用
+    static async searchValue(ctx,next){
+       let {data} = ctx.query;
+       let sql = `select * from tb_sp_book where bookName like '%${data}%'`;
+       let result = await query( sql );
+       let sql1 = `select * from tb_sp_user where penName like '%${data}%' or nickName like '%${data}%'`;
+       let result1 = await query( sql1 );
+       if(result&&result1){
+        ctx.body={code:'0',msg:'成功',data:{bookMsg:result,writerMsg:result1}}
+       }else{
+        ctx.body={code:'1',msg:'错误'}
+       }
+          
+    }
+    
     // 某个章节的详情页
     static async getChapter(ctx,next){
     	console.log('I come here')
@@ -207,13 +224,43 @@ if (result1.length>0) {
         	ctx.body = {code:'1',msg:'错误'}
         }	
     }
+    static async getRefresh(ctx,next){
+         const {chapterId,type} = ctx.query;
+         var sql,result;
+         switch (type) {
+                case 'like':
+                 {sql = `select count(likes) as likes from tb_sp_chapterOpt where chapterId = "${chapterId}"`
+                result = await query( sql )
+                if(result){
+            ctx.body={code:'0',msg:'成功',data:result[0].likes}
+         }else{
+            ctx.body={code:'1',msg:'出错'}
+         }
+                 } 
+                 break;
+                 case 'comments':
+                 { sql = `select penName,content,S1.create_date,pic from tb_sp_comment S1 join tb_sp_user S2 on S1.transmitId = S2.id where chapterId="${chapterId}"`
+                                   result = await query( sql )
+                                    if(result){
+            ctx.body={code:'0',msg:'成功',data:result}
+         }else{
+            ctx.body={code:'1',msg:'出错'}
+         }
+                               }
+                  break;
+
+             
+         }
+         
+
+    }
     // write的某个章节的修改
     static async getEditChapter(ctx,next){
         // console.log('I come here')
         const {chapterId,bookId} = ctx.query;
         // let writerId = ctx.header.__sid;
         //当前章节
-        let sql = `select content,title,bookName,pic,S1.num,S1.id as chapterId,S2.id as bookId from tb_sp_chapter S1 join tb_sp_book S2 on S1.bookId=S2.id where S1.id="${chapterId}"`;
+        let sql = `select content,title,bookName,pic,S1.num,S1.id as chapterId,S2.id as bookId,S2.isInvite from tb_sp_chapter S1 join tb_sp_book S2 on S1.bookId=S2.id where S1.id="${chapterId}"`;
         let result = await query( sql );
            
         if(result.length>0){
@@ -278,15 +325,17 @@ if (result1.length>0) {
         let updateType = ctx.request.body.type;//0新增书及第一章，1修改一个草稿
         let status = ctx.request.body.status;//0草稿，1发表
         if(updateType==0){
-        const {bookTitle,chapterTitle,content,status,num} = ctx.request.body;
+        let {bookTitle,chapterTitle,content,status,num} = ctx.request.body;
+        num = parseInt(num)
+        status = parseInt(status)
         let bookId  = GetuuId();
         let chapterId = GetuuId("time");
         // 书新增
         let sql1 = `insert into tb_sp_book (id,bookName,writerId,status,create_date,currentWriter) 
-        values("${bookId}","${bookTitle}","${writerId}","${status}",now(),"${writerId}");`;
+        values("${bookId}","${bookTitle}","${writerId}",${status},now(),"${writerId}");`;
         // 章节新增
         let sql2 = `insert into tb_sp_chapter (id,writerId,bookId,num,content,title,status,create_date)
-        values("${chapterId}","${writerId}","${bookId}","${num}","${content}","${chapterTitle}","${status}",now());`;
+        values("${chapterId}","${writerId}","${bookId}",${num},"${content}","${chapterTitle}",${status},now());`;
         let result1 = await query( sql1 );
         let result2 = await query( sql2 );
         if(result1&&result2){
@@ -297,7 +346,7 @@ if (result1.length>0) {
         }else{
             console.log('i come to update chapter')
         	let {bookTitle,chapterTitle,content,status,num,bookId,chapterId} = ctx.request.body;
-        	let sql2 = `update tb_sp_chapter set content="${content}",title="${chapterTitle}",status="${status}" where id = "${chapterId}";`
+        	let sql2 = `update tb_sp_chapter set content="${content}",title="${chapterTitle}",status=${status} where id = "${chapterId}";`
             let result2 = await query( sql2 );
         	if(status==1&&result2){        		 
                  let sql1 = `update tb_sp_book set chapterNum=${num},isInvite=0 where id = "${bookId}"`;
@@ -308,7 +357,7 @@ if (result1.length>0) {
                     ctx.body={code:'1',msg:'setBook失败'}
                  }
         	}else{
-                ctx.body={code:'1',msg:'操作失败'}
+                ctx.body={code:'0',msg:'保存成功'}
             }
 
        

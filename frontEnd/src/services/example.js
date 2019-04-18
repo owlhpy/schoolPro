@@ -56,10 +56,21 @@ export async function sendFriendInvite(param) {
     return request('/api/sendFriendInvite',{method:'get',data:param});
 }
 
-
-
-
-
+// handle好友邀请
+export async function saveFriendInvite(param) {
+	// console.log("request",param)
+    return request('/api/saveFriendInvite',{method:'get',data:param});
+}
+// 搜索
+export async function searchValue(param) {
+	// console.log("request",param)
+    return request('/api/searchValue',{method:'get',data:param});
+}
+// 搜索
+export async function getRefresh(param) {
+	// console.log("request",param)
+    return request('/api/getRefresh',{method:'get',data:param});
+}
 
 
 

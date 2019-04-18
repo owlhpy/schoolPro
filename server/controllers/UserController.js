@@ -81,6 +81,39 @@ class UserController {
     // 获取好友申请
     static async getFriendInvite(ctx,next){
         let id = ctx.header.__sid;
+        let sql = `select penName,S2.transmitId,S2.create_date,S2.status from tb_sp_user S1 join tb_sp_friendInvite S2 on S1.id = S2.transmitId where S2.receiveId = "${id}"`
+        let result = await query( sql );
+        if(result.length>0){
+            ctx.body={code:'0',msg:'成功！',data:result}
+        }else{
+            ctx.body={code:'0',msg:'失败！',data:[]}
+        }
+    }
+     // handle好友请求
+     static async saveFriendInvite(ctx,next){
+        let id = ctx.header.__sid;
+        let {transmitId,type} = ctx.query;
+        let sql = `update tb_sp_friendInvite set status=${type} where receiveId = "${id}" and transmitId="${transmitId}" and status=0`
+        let result = await query( sql );
+        if(result){
+            ctx.body={code:'0',msg:'成功！'}
+        }else{
+            ctx.body={code:'1',msg:'失败！'}
+        }
+
+    }
+    // 发送好友请求
+    static async sendFriendInvite(ctx,next){
+        let id = ctx.header.__sid;
+        let {receiveId} = ctx.query;
+        let sql = `insert into tb_sp_friendInvite (transmitId,receiveId,create_date) values("${id}","${receiveId}",now())`
+        let result = await query( sql );
+        if(result){
+            ctx.body={code:'0',msg:'成功！'}
+        }else{
+            ctx.body={code:'1',msg:'失败！'}
+        }
+
     }
      // 获取留言信息
     static async getMsg(ctx,next){
@@ -112,10 +145,22 @@ class UserController {
         let result = await query( sql );
         let sql1 = `select S1.num,S2.bookName,S2.id,S2.pic from tb_sp_chapter S1 join tb_sp_book S2 on S1.bookId=S2.id where S1.writerId="${writerId}" and S1.status=1`;
         let result1 = await query( sql1 );
+        let sql2 = `select * from tb_sp_friendInvite where transmitId="${writerId}" or receiveId = "${writerId}" `
+        let result2 = await query( sql2 );
+
+        var friends=[];
+        if(result2.length>0){
+          friends = result2.map(item=>{
+            if(item.transmitId!=writerId)
+                return item.transmitId
+            if(item.receiveId!=writerId)
+                return item.receiveId;
+          })
+        }
          if(result.length>0&&result1.length>0){
-            ctx.body = {code:'0',message:'成功',data:{bookMsg:result1,selfMsg:result[0]}}
+            ctx.body = {code:'0',message:'成功',data:{bookMsg:result1,selfMsg:result[0],friends:friends.length>0?friends:[]}}
         }else{
-            ctx.body = {code:'0',message:'暂无数据',data:{bookMsg:[],selfMsg:result[0]}}
+            ctx.body = {code:'0',message:'暂无数据',data:{bookMsg:[],selfMsg:result[0],friends:friends.length>0?friends:[]}}
         }
     }
     

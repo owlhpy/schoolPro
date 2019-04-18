@@ -26,6 +26,19 @@ router.get('/getInvitedBookMsg',UserController.getInvitedBookMsg)
 router.get('/hotWriter',UserController.hotWriter)
 // 获取作者详细信息
 router.get('/getWriterDetail',UserController.getWriterDetail)
+// 发送邀请信息
+router.get('/sendFriendInvite',UserController.sendFriendInvite)
+// 发送邀请信息
+router.get('/getFriendInvite',UserController.getFriendInvite)
+// 发送邀请信息
+router.get('/saveFriendInvite',UserController.saveFriendInvite)
+// 搜索
+router.get('/searchValue',BookController.searchValue)
+// 更新操作
+router.get('/getRefresh',BookController.getRefresh)
+
+
+
 
 // 获取邀请回复
 router.get('/getInviteReply',UserController.getInviteReply)

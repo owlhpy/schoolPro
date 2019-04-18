@@ -55,7 +55,7 @@ function f_getRoutes(com){
 
 
 
-const App = ({home,dispatch,location})=>{
+const App = ({home,dispatch,location,history})=>{
 	// const {user} = home
   const user = sessionStorage.getItem('__SID'); 
 	const menu = [
@@ -66,13 +66,14 @@ const App = ({home,dispatch,location})=>{
 	{menuname:'writer/:id',cpath:'hotWriter/details',mpath:'hotWriter/model'},
 	{menuname:'setting',cpath:'setting/index',mpath:'setting/model'},
   {menuname:'self',cpath:'self/index',mpath:'self/model'},
+  {menuname:'search/:id',cpath:'search/index',mpath:'search/model'},
 	]
   const ComArr = renderComponent(menu,"../");
   console.log('ComArr',ComArr)
 	return (
          <div>
          	 <Layout>
-        <WrapperHeader dispatch={dispatch} user={user} />
+        <WrapperHeader dispatch={dispatch} user={user} history={history} />
         <Content className="content">
          
           	 <Switch>

@@ -1,14 +1,15 @@
-// import {getMenu,userLogin,test,getDaily} from '../../services/example'
+import {searchValue} from '../../services/example'
 import {message} from 'antd'
 
 export default{
-  namespace:'writer',
+  namespace:'search',
   state:{
     user:{userName:'hpy'}
   },
   effects:{
-      *getMenu({payload,callback},{call,put,select}){
-          console.log('OK')
+      *searchValue({payload,callback},{call,put,select}){
+           const data = yield call(searchValue,payload);
+          return data;
       } 
      
 

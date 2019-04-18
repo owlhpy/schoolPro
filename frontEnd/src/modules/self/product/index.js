@@ -8,13 +8,13 @@ const Search = Input.Search;
 class Product extends React.Component{
 	constructor(props){
 		super(props)
-    this.state = {editProd:[],selfProd:[]}
+    this.state = {editProd:[],selfProd:[],originSelfProd:[]}
     
 	}
   componentDidMount(){
     const {dispatch} = this.props;
     dispatch({type:'selfs/getProducts'}).then((prod)=>{
-      this.setState({editProd:prod.editProd,selfProd:prod.selfProd})
+      this.setState({editProd:prod.editProd,selfProd:prod.selfProd,originSelfProd:prod.selfProd})
     })
   }
 	render(){
@@ -24,6 +24,18 @@ class Product extends React.Component{
       console.log('bookId,chapterId',bookId,chapterId);
       history.push(`/self/write/${bookId}-${chapterId}`)
       
+    }
+    const handleSearch = (value)=>{
+      console.log('in')
+      if(!value){
+        this.setState({selfProd:this.state.originSelfProd})
+      }
+      let result = this.state.originSelfProd.map(item=>{
+        if(item.bookName.indexOf(value)>=0 || item.num.toString().indexOf(value)>=0)
+          return item;
+      })
+      result = result.filter(item=>item!=undefined);
+      this.setState({selfProd:result});
     }
     
 		return(
@@ -74,7 +86,7 @@ class Product extends React.Component{
         <Col span={6}>
              <Search
               placeholder="作品快捷搜索"
-              onSearch={value => console.log(value)}
+              onSearch={handleSearch}
               style={{ width: 200 }}
             />
         </Col>

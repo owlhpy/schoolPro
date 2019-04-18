@@ -4,6 +4,7 @@ import React from 'react'
 import {Row,Col,Form,Input,Button,Upload,Icon,message} from 'antd'
 // import '../../../assets/js/config.js'
 import { connect } from "dva";
+import {withRouter} from 'dva/router'
 
 class Write extends React.Component {
   constructor(props) {
@@ -13,7 +14,8 @@ class Write extends React.Component {
   }
 
   componentDidMount(){
-    const {dispatch,selfs} = this.props
+    const {dispatch,selfs,history} = this.props
+    console.log('this.porps',this.props)
     
     let paths = window.location.pathname.split('/');
     let bookId = paths[paths.length-1];
@@ -47,7 +49,7 @@ class Write extends React.Component {
   render() {
     console.log('this.state.type',this.state.type)
   	var toolbarOptions = ['bold', 'italic', 'underline', 'strike'];
-    const {dispatch,selfs} = this.props;
+    const {dispatch,selfs,history} = this.props;
     const { getFieldDecorator } = this.props.form;
     const imageUrl = null
     const {chapter}=this.state;
@@ -66,7 +68,11 @@ class Write extends React.Component {
           }
           values.status = 1;//0草稿，1发表,2待新增         
           console.log('Received values of form: ', values);
-          dispatch({type:'selfs/bookSave',payload:values});
+          dispatch({type:'selfs/bookSave',payload:values}).then(data=>{
+            if(data.code=='0'){
+              history.push("/self/product")
+            }
+          })
            
         }
        
@@ -82,7 +88,12 @@ class Write extends React.Component {
           }
           values.status = 0;//0草稿，1发表,2待新增         
           console.log('Received values of form: ', values);
-          dispatch({type:'selfs/bookSave',payload:values});
+          dispatch({type:'selfs/bookSave',payload:values}).then(data=>{
+            if(data.code=='0'){
+              history.push("/self/product")
+            }
+          })
+
            
         }
        
@@ -131,7 +142,7 @@ class Write extends React.Component {
                     rules: [{ required: true, message: '请输入标题!' }],
                     initialValue:chapter.bookName
                   })(
-                    <Input label="标题" placeholder="书名" disabled={chapter.bookName?true:false} />
+                    <Input label="标题" placeholder="书名" disabled={chapter.isInvite==0?true:false} />
                   )}
           </Form.Item>
         
@@ -173,16 +184,13 @@ class Write extends React.Component {
            <ReactQuill value={this.state.text || ''}
                   onChange={this.handleChange}
                   modules={{toolbar:toolbarOptions}}
-                  style={{height:'50vh',marginBottom:'50px',backgroundColor:'white'}}
+                  style={{height:'40vh',paddingBottom:'40px',backgroundColor:'white'}}
 
 
                    />
         </Row>
-        <div style={{textAlign:'center'}}>
-        <Button onClick={()=>{console.log('ok')}} style={{marginRight:'10px'}}>
-           重置
-        </Button>
-           <Button onClick={handleSave}>
+        <div style={{textAlign:'center',marginTop:'10px'}}>
+           <Button onClick={handleSave} style={{marginRight:'10px'}}>
            存草稿
         </Button>
         <Button type="primary" onClick={handleSubmit}>
