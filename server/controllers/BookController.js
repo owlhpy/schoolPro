@@ -167,7 +167,7 @@ if (result1.length>0) {
     static async getBook(ctx,next){
        const {bookId} = ctx.query;
        
-        let sql2 = `select bookId,bookName,chapterNum,A.id,isDelete,isShow,num,pic,title,A.writerId from tb_sp_chapter A join tb_sp_book B on A.bookId=B.id where A.bookId = "${bookId}" and A.status=1 order by A.num`
+        let sql2 = `select bookId,bookName,chapterNum,A.id,isDelete,num,pic,title,A.writerId from tb_sp_chapter A join tb_sp_book B on A.bookId=B.id where A.bookId = "${bookId}" and A.status=1 order by A.num`
         let result2 = await query( sql2 );
         if(result2.length>0){
             var user = result2.map(item=>{
