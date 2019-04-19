@@ -20,7 +20,7 @@ class BookController{
 	
 	// 首页的书本信息
 	static async pageBooks(ctx,next){
-        let sql = `select bookName,t.recommends,t.collections,S3.id,S3.chapterNum from (select sum(recommends) as recommends,sum(collections) as collections,S1.id from tb_sp_book S1 join tb_sp_bookOpt S2 on S1.id=S2.bookId group by S1.id) t join tb_sp_book S3 on t.id = S3.id`;
+        let sql = `select bookName,t.recommends,t.collections,S3.id,S3.chapterNum from (select sum(recommends) as recommends,sum(collections) as collections,S1.id from tb_sp_book S1 join tb_sp_bookOpt S2 on S1.id=S2.bookId group by S1.id) t join tb_sp_book S3 on t.id = S3.id order by t.recommends,t.collections desc`;
         let result = await query( sql );
         let sql2 = `select bookName,id from tb_sp_book order by create_date desc limit 5`
         let result2 = await query( sql2 );
