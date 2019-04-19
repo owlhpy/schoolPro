@@ -17,8 +17,13 @@ class Writer extends React.Component{
         const {dispatch} = this.props
         dispatch({type:'hotWriter/getWriterDetail',payload:{writerId:writerId}}).then(data=>{
         	if(data.code=='0'){
-        		data.data.friends.push(sessionStorage.getItem('userId'))
-        		this.setState({bookMsg:data.data.bookMsg,selfMsg:data.data.selfMsg,friends:data.data.friends})
+        		if(data.data.selfMsg.id==sessionStorage.getItem('userId')){
+        			this.setState({bookMsg:data.data.bookMsg,selfMsg:data.data.selfMsg,friends:[sessionStorage.getItem('userId')]})
+        		}
+        		else{
+        			this.setState({bookMsg:data.data.bookMsg,selfMsg:data.data.selfMsg,friends:data.data.friends})
+        		}
+        		
         	}else{
         		message.error(data.msg)
         	}

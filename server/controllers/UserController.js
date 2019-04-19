@@ -75,7 +75,7 @@ class UserController {
     // 获取邀请回复
     static async getInviteReply(ctx,next){
         let transmitId = ctx.header.__sid;
-        let sql = `select S1.penName,S3.bookName,S2.chapterNum,S2.status,S2.create_date from 
+        let sql = `select S1.penName,S3.bookName,S2.chapterNum,S2.status,S2.create_date,S2.bookId from 
         tb_sp_user S1 left join tb_sp_bookInvite S2 on S2.receiveId=S1.id left join tb_sp_book S3 on S3.id=S2.bookId
          where S2.transmitId="${transmitId}" order by S2.create_date desc;`
         let result = await query( sql );
@@ -88,7 +88,7 @@ class UserController {
     // 获取好友申请
     static async getFriendInvite(ctx,next){
         let id = ctx.header.__sid;
-        let sql = `select penName,S2.transmitId,S2.create_date,S2.status from tb_sp_user S1 join tb_sp_friendInvite S2 on S1.id = S2.transmitId where S2.receiveId = "${id}"`
+        let sql = `select penName,S2.transmitId,S2.create_date,S2.status,S2.id from tb_sp_user S1 join tb_sp_friendInvite S2 on S1.id = S2.transmitId where S2.receiveId = "${id}"`
         let result = await query( sql );
         if(result.length>0){
             ctx.body={code:'0',msg:'成功！',data:result}
@@ -100,7 +100,7 @@ class UserController {
      static async saveFriendInvite(ctx,next){
         let id = ctx.header.__sid;
         let {transmitId,type} = ctx.query;
-        let sql = `update tb_sp_friendInvite set status=${type} where receiveId = "${id}" and transmitId="${transmitId}" and status=0`
+        let sql = `update tb_sp_friendInvite set status=${type} where id="${transmitId}"`
         let result = await query( sql );
         if(result){
             ctx.body={code:'0',msg:'成功！'}
@@ -113,7 +113,8 @@ class UserController {
     static async sendFriendInvite(ctx,next){
         let id = ctx.header.__sid;
         let {receiveId} = ctx.query;
-        let sql = `insert into tb_sp_friendInvite (transmitId,receiveId,create_date) values("${id}","${receiveId}",now())`
+        let newId = GetuuId("time")
+        let sql = `insert into tb_sp_friendInvite (id,transmitId,receiveId,create_date) values("${newId}",${id}","${receiveId}",now())`
         let result = await query( sql );
         if(result){
             ctx.body={code:'0',msg:'成功！'}

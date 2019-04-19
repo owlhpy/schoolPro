@@ -94,7 +94,7 @@ const contentList = {
    dataSource={this.state.tab1Data}
    grid={{ gutter: 32, column: 2}}
    renderItem={item => (<List.Item style={{display:'flex',justifyContent:'space-between'}}>
-    <span>{item.penName}邀请您参与<Link to="/">《{item.bookName}》</Link>第{item.chapterNum}章的续写</span>
+    <span>{item.penName}邀请您参与<Link to={"/book/"+item.id}>《{item.bookName}》</Link>第{item.chapterNum}章的续写</span>
    <span style={{display:'inline-block',float:'right'}}>
    {
     item.status!=0?<span>{item.status==1?"已接受":"已拒绝"}</span>:<span><Button style={{marginRight:'10px'}} size="small" onClick={()=>handleInvite(2,item.bookId,item.chapterNum)}>拒绝</Button>
@@ -112,7 +112,7 @@ const contentList = {
    dataSource={this.state.tab2Data}
    grid={{ gutter: 32, column: 2}}
    renderItem={item => (<List.Item style={{display:'flex',justifyContent:'space-between'}}>
-    <span>邀请{item.penName}参与<Link to="/">《{item.bookName}》</Link>第{item.chapterNum}章的续写</span>
+    <span>邀请{item.penName}参与<Link to={"/book/"+item.bookId}>《{item.bookName}》</Link>第{item.chapterNum}章的续写</span>
     <span style={{display:'inline-block',float:'right'}}>状态：{switchStatus(item.status)}</span></List.Item>)}
   />,
    tab3: 
@@ -123,7 +123,7 @@ const contentList = {
     <span>{item.penName}请求添加您为好友</span>
    <span style={{display:'inline-block',float:'right'}}>
    {
-    item.status!==0?<span>{item.status==2?'已拒绝':'已接受'}</span>: <span><Button style={{marginRight:'10px'}} size="small" onClick={()=>handleFriendInvite(2,item.transmitId)}>拒绝</Button><Button type="primary" size="small" onClick={()=>handleFriendInvite(1,item.transmitId)}>接受</Button></span>
+    item.status!==0?<span>{item.status==2?'已拒绝':'已接受'}</span>: <span><Button style={{marginRight:'10px'}} size="small" onClick={()=>handleFriendInvite(2,item.id)}>拒绝</Button><Button type="primary" size="small" onClick={()=>handleFriendInvite(1,item.id)}>接受</Button></span>
    }
   
    
