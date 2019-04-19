@@ -252,9 +252,9 @@ if (result1.length>0) {
                   {
                     let {bookId} = ctx.query
                     let transmitId = ctx.header.__sid;
-                    sql=`delete from tb_sp_bookOpt where transmitId = "${transmitId}" and bookId="${bookId}"`
+                    sql=`update tb_sp_bookOpt set collections=0 where transmitId = "${transmitId}" and bookId="${bookId}"`
                     result = result = await query( sql )
-                    let sql1 = `select S1.id,S1.bookName from tb_sp_book S1 join tb_sp_bookOpt S2 on S1.id=S2.bookId where S2.transmitId = "${transmitId}"`
+                    let sql1 = `select S1.id,S1.bookName from tb_sp_book S1 join tb_sp_bookOpt S2 on S1.id=S2.bookId where S2.transmitId = "${transmitId}" and collections>0`
                     let result1 = await query( sql1 )
                     if(result&&result1){
                     ctx.body={code:'0',msg:'成功',data:result1}
@@ -289,7 +289,7 @@ if (result1.length>0) {
         let writerId = ctx.header.__sid;
         let sql = `select S1.num,S2.bookName,S1.id,S2.pic from tb_sp_chapter S1 join tb_sp_book S2 on S1.bookId=S2.id where S1.writerId="${writerId}" and S1.status=1`;
         let sql2 = `select S1.num as chapterNum,S2.bookName,S1.id as chapterId,S2.id as bookId from tb_sp_chapter S1 join tb_sp_book S2 on S1.bookId=S2.id where S1.writerId="${writerId}" and S1.status=0`;//where S1.receiveWriterId="${writerId}" and S1.status=0
-        let sql3 = `select S1.id,S1.bookName from tb_sp_book S1 join tb_sp_bookOpt S2 on S1.id=S2.bookId where S2.transmitId = "${writerId}"`
+        let sql3 = `select S1.id,S1.bookName from tb_sp_book S1 join tb_sp_bookOpt S2 on S1.id=S2.bookId where S2.transmitId = "${writerId}" and collections>0`
         let result = await query( sql );
         let result2 = await query( sql2 );
         let result3 = await query( sql3 );
