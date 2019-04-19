@@ -1,7 +1,7 @@
 import {checkLogin,bookSave,getChapter,logout,getProducts,
   getFriends,getInviteBooks,getIBChapter,sendInvite,editPwd,saveSelfMsg,getSelfMsg,
   getMessage,getFriendInvite,getInviteReply,getEditChapter,saveInvite,saveFriendInvite,
-  sendMsg,getInvitedBookMsg} from '../../services/example'
+  sendMsg,getInvitedBookMsg,getRefresh} from '../../services/example'
 import {routerRedux} from 'dva/router'
 import {message} from 'antd'
 // import {routerRedux} from 'dva/router'
@@ -50,7 +50,11 @@ export default{
           const data = yield call(saveFriendInvite,payload);
           return data;
       },
-      
+      // 取消收藏
+     *getRefresh({payload,callback},{call,put,select}){
+          const data = yield call(getRefresh,payload);
+          return data;
+      },
 
       
       // friend获取可选的书

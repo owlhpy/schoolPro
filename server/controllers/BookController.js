@@ -167,7 +167,7 @@ if (result1.length>0) {
     static async getBook(ctx,next){
        const {bookId} = ctx.query;
        
-        let sql2 = `select bookId,bookName,chapterNum,A.id,isDelete,isShow,num,pic,title,A.writerId from tb_sp_chapter A join tb_sp_book B on A.bookId=B.id where A.bookId = "${bookId}" order by A.num`
+        let sql2 = `select bookId,bookName,chapterNum,A.id,isDelete,isShow,num,pic,title,A.writerId from tb_sp_chapter A join tb_sp_book B on A.bookId=B.id where A.bookId = "${bookId}" and A.status=1 order by A.num`
         let result2 = await query( sql2 );
         if(result2.length>0){
             var user = result2.map(item=>{
@@ -248,6 +248,20 @@ if (result1.length>0) {
          }
                                }
                   break;
+                  case 'cancelCollection':
+                  {
+                    let {bookId} = ctx.query
+                    let transmitId = ctx.header.__sid;
+                    sql=`delete from tb_sp_bookOpt where transmitId = "${transmitId}" and bookId="${bookId}"`
+                    result = result = await query( sql )
+                    let sql1 = `select S1.id,S1.bookName from tb_sp_book S1 join tb_sp_bookOpt S2 on S1.id=S2.bookId where S2.transmitId = "${transmitId}"`
+                    let result1 = await query( sql1 )
+                    if(result&&result1){
+                    ctx.body={code:'0',msg:'成功',data:result1}
+         }else{
+            ctx.body={code:'1',msg:'出错'}
+         }
+                  }
 
              
          }

@@ -1,4 +1,4 @@
-import { List, Card,Row ,Col,Avatar,Tag,Icon,Input,Button} from "antd";
+import { List, Card,Row ,Col,Avatar,Tag,Icon,Input,Button,message} from "antd";
 import {Link} from 'dva/router'
 import React from 'react'
 import { connect } from "dva";
@@ -19,13 +19,28 @@ class Product extends React.Component{
     })
   }
 	render(){
-    const {disaptch,history,match,selfs} = this.props;
+    const {dispatch,history,match,selfs} = this.props;
     const {products} = selfs
     const handleWrite = (bookId,chapterId)=>{
       console.log('bookId,chapterId',bookId,chapterId);
       history.push(`/self/write/${bookId}-${chapterId}`)
       
     }
+    const cancelCollection = (type,bookId)=>{
+
+     dispatch({
+            type: "selfs/getRefresh",
+            payload: { type: type, bookId: bookId }
+          }).then(data => {
+            if (data.code == "0") {
+              message.success("成功")
+              this.setState({collectProd:data.data})
+            } else {
+              message.error(data.msg);
+            }
+          });
+    }
+
     const handleSearch = (value)=>{
       console.log('in')
       if(!value){
@@ -59,10 +74,10 @@ class Product extends React.Component{
         <Col span={12}>
         <h2>我的收藏</h2>
           <List 
-          grid={{ gutter: 16, column: 2 }}
    dataSource={this.state.collectProd}
-   renderItem={item => (<List.Item >
-    <Link to={`/book/${item.id}`}>{ `《${item.bookName}》`}</Link>
+   renderItem={item => (<List.Item style={{display:'flex',justifyContent:'space-between'}}>
+    <span><Link to={`/book/${item.id}`}>{ `《${item.bookName}》`}</Link></span>
+     <Button size="small" onClick = {()=>{cancelCollection('cancelCollection',item.id)}} type="primary">取消收藏</Button>
     
     </List.Item>)
 }
