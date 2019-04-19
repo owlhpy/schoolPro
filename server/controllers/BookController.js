@@ -275,10 +275,12 @@ if (result1.length>0) {
         let writerId = ctx.header.__sid;
         let sql = `select S1.num,S2.bookName,S1.id,S2.pic from tb_sp_chapter S1 join tb_sp_book S2 on S1.bookId=S2.id where S1.writerId="${writerId}" and S1.status=1`;
         let sql2 = `select S1.num as chapterNum,S2.bookName,S1.id as chapterId,S2.id as bookId from tb_sp_chapter S1 join tb_sp_book S2 on S1.bookId=S2.id where S1.writerId="${writerId}" and S1.status=0`;//where S1.receiveWriterId="${writerId}" and S1.status=0
+        let sql3 = `select S1.id,S1.bookName from tb_sp_book S1 join tb_sp_bookOpt S2 on S1.id=S2.bookId where S2.transmitId = "${writerId}"`
         let result = await query( sql );
         let result2 = await query( sql2 );
-        if(result&&result2){
-        	ctx.body = {code:'0',msg:'成功',data:{editProd:result2,selfProd:result}}
+        let result3 = await query( sql3 );
+        if(result&&result2&&result3){
+        	ctx.body = {code:'0',msg:'成功',data:{editProd:result2,selfProd:result,collectProd:result3}}
         }else{
         	ctx.body = {code:'1',msg:'错误'}
         }

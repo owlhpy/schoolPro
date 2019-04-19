@@ -157,21 +157,25 @@ class Write extends React.Component {
           </Col>
           <Col span={6}>
                 <Form.Item label="书封面图片">
-          {getFieldDecorator('pic', {
+          {
+            <img src={'/src/assets/images/aaa.jpg'} style={{width:'100%'}} alt="avatar" /> 
+          //   getFieldDecorator('pic', {
           
-          })(
-             <Upload
-        name="avatar"
-        listType="picture-card"
-        className="avatar-uploader"
-        showUploadList={false}
-        action="//jsonplaceholder.typicode.com/posts/"
-        beforeUpload={beforeUpload}
-        onChange={this.handlePicChange}
-      >
-        {imageUrl ? <img src={'/src/assets/images/'+imageUrl} alt="avatar" /> : uploadButton}
-      </Upload>
-          )}
+          // })(
+      //        <Upload
+      //   name="avatar"
+      //   listType="picture-card"
+      //   className="avatar-uploader"
+      //   showUploadList={false}
+      //   action="//jsonplaceholder.typicode.com/posts/"
+      //   beforeUpload={beforeUpload}
+      //   onChange={this.handlePicChange}
+      // >
+      //   {imageUrl ? <img src={'/src/assets/images/'+} alt="avatar" /> : uploadButton}
+      // </Upload>
+      //     )
+      
+        }
         </Form.Item>
           </Col>
            </Form> 

@@ -37,9 +37,12 @@ class UserController {
     static async userSignup(ctx,next){
         let {nickName,password} = ctx.request.body
         let birthday = new Date();
-        // console.log('uuid',replace(uuid(), '-', ''))
-        // console.log(ctx.request.body);
-        let sql = `insert into tb_sp_user (id,penName,nickName,password,birthday) values(replace(uuid(), '-', ''),"${nickName}","${nickName}","${password}",now())`
+        let sql1 = `select nickName from tb_sp_user where nickName="${nickName}"`
+        let result1 = await query( sql1 )
+        if(result1.length>0){
+            ctx.body = {code:'1',msg:"用户名不唯一，请重新填写！"}
+        }else{
+             let sql = `insert into tb_sp_user (id,penName,nickName,password,birthday) values(replace(uuid(), '-', ''),"${nickName}","${nickName}","${password}",now())`
         let result = await query( sql )
         console.log('result',result)
         if(result){
@@ -47,6 +50,10 @@ class UserController {
        }else{
         ctx.body = {code:'1',message:'注册错误'}
        }
+        }
+        // console.log('uuid',replace(uuid(), '-', ''))
+        // console.log(ctx.request.body);
+       
         
     }
     // 判断是否登录

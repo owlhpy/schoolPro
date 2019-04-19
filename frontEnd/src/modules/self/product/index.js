@@ -8,13 +8,14 @@ const Search = Input.Search;
 class Product extends React.Component{
 	constructor(props){
 		super(props)
-    this.state = {editProd:[],selfProd:[],originSelfProd:[]}
+    this.state = {editProd:[],selfProd:[],originSelfProd:[],collectProd:[]}
     
 	}
   componentDidMount(){
     const {dispatch} = this.props;
     dispatch({type:'selfs/getProducts'}).then((prod)=>{
-      this.setState({editProd:prod.editProd,selfProd:prod.selfProd,originSelfProd:prod.selfProd})
+      // console.log('prod',prod)
+      this.setState({editProd:prod.editProd,selfProd:prod.selfProd,originSelfProd:prod.selfProd,collectProd:prod.collectProd})
     })
   }
 	render(){
@@ -40,13 +41,13 @@ class Product extends React.Component{
     
 		return(
 			<div>
-      <h2>待续写作品</h2>
-      <Row>
-        <Col>
+      
+      <Row gutter={32}>
+        <Col span={12}>
+        <h2>待续写作品</h2>
           <List 
    dataSource={this.state.editProd}
-   grid={{ gutter: 32, column: 2}}
-   renderItem={item => (<List.Item style={{display:'flex',justifyContent:'space-between'}}>
+   renderItem={item => (<List.Item  style={{display:'flex',justifyContent:'space-between'}}>
     <span>{ `《${item.bookName}》第${item.chapterNum}章`}</span>
     <Button size="small" onClick = {()=>{handleWrite(item.bookId,item.chapterId)}} type="primary">去续写</Button>
     
@@ -55,6 +56,19 @@ class Product extends React.Component{
 }
   />
         </Col>
+        <Col span={12}>
+        <h2>我的收藏</h2>
+          <List 
+          grid={{ gutter: 16, column: 2 }}
+   dataSource={this.state.collectProd}
+   renderItem={item => (<List.Item >
+    <Link to={`/book/${item.id}`}>{ `《${item.bookName}》`}</Link>
+    
+    </List.Item>)
+}
+  />
+        </Col>
+        
       </Row>
  
 				<h2>我的作品</h2>

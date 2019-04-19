@@ -24,6 +24,8 @@ class Signup extends React.Component {
             if(data.code==0){
               message.success("注册成功，请登录！");
               history.push(`/login`);
+            }else{
+              message.error(data.msg)
             }  
             
           })

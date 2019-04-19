@@ -36,7 +36,7 @@ export default{
           const data = yield call(getProducts,payload);
           if(data.code==0){
             console.log(data.data);
-            let products = {selfProd:data.data.selfProd,editProd:data.data.editProd}
+            let products = {selfProd:data.data.selfProd,editProd:data.data.editProd,collectProd:data.data.collectProd}
             return products;
           }
       },
