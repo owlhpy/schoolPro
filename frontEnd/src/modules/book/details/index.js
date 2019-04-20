@@ -74,6 +74,7 @@ class Chapter extends React.Component {
                 dispatch({type:'book/getRefresh',payload:{chapterId:chapterId,type:'comments'}}).then(data=>{
                 if(data.code=='0'){
                   this.setState({comments:data.data})
+                  this.props.form.setFieldsValue({content:null})
                 }
               })
             }else{
