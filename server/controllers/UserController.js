@@ -114,7 +114,7 @@ class UserController {
         let id = ctx.header.__sid;
         let {receiveId} = ctx.query;
         let newId = GetuuId("time")
-        let sql = `insert into tb_sp_friendInvite (id,transmitId,receiveId,create_date) values("${newId}",${id}","${receiveId}",now())`
+        let sql = `insert into tb_sp_friendInvite (id,transmitId,receiveId,create_date) values("${newId}","${id}","${receiveId}",now())`
         let result = await query( sql );
         if(result){
             ctx.body={code:'0',msg:'成功！'}

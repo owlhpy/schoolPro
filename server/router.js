@@ -1,5 +1,5 @@
 const router = require('koa-router')()
-const passport = require('./passport')
+// const passport = require('./passport')
 
 const UserController = require("./controllers/UserController.js")
 const BookController = require("./controllers/BookController.js")
