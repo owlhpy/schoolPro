@@ -88,7 +88,7 @@ class IndexCom extends React.Component{
               <h4 style={{textAlign:'center',width:'100%'}}>{this.state.opt.collections}</h4>
             </List.Item>
             <List.Item>
-              <h4><Icon type="eye" />推荐</h4>
+              <h4><Icon type="eye" />点赞</h4>
               <h4 style={{textAlign:'center',width:'100%'}}>{this.state.opt.recommends}</h4>
             </List.Item>
             <List.Item>

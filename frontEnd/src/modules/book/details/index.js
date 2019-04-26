@@ -115,7 +115,7 @@ class Chapter extends React.Component {
         case "recommend":
           dispatch({
             type: "book/handleOpt",
-            payload: { type: 1, bookId: this.state.bookMsg[0].bookId }
+            payload: { type: 1, bookId: this.state.bookMsg[0].bId }
           }).then(data => {
             if (data.code == "0") {
               message.success("成功");
@@ -127,7 +127,7 @@ class Chapter extends React.Component {
         case "collection":
           dispatch({
             type: "book/handleOpt",
-            payload: { type: 0, bookId: this.state.bookMsg[0].bookId }
+            payload: { type: 0, bookId: this.state.bookMsg[0].bId }
           }).then(data => {
             if (data.code == "0") {
               message.success("成功");
@@ -159,7 +159,7 @@ class Chapter extends React.Component {
               actions={[
                 <div onClick={handleLike}>
                   <Icon type="heart" />
-                  喜欢<p>{`${this.state.likes}`}</p>
+                  点赞<p>{`${this.state.likes}`}</p>
                 </div>
               ]}
             >
@@ -178,7 +178,7 @@ class Chapter extends React.Component {
                 <div>
                   目录
                   <Link
-                    to={`/book/${chapterMsg.bookId}`}
+                    to={`/book/${chapterMsg.bId}`}
                     style={{ float: "right" }}
                   >
                     返回书首页
@@ -222,7 +222,7 @@ class Chapter extends React.Component {
               dataSource={bookMsg}
               renderItem={item => (
                 <List.Item>
-                  <Link to={`/book/details/${item.id}`}>{item.title}</Link>
+                  <Link to={`/book/details/${item.cId}`}>{item.title}</Link>
                 </List.Item>
               )}
             />

@@ -33,7 +33,7 @@ class Form1 extends React.Component{
     }
      const handleCancel = ()=>{
       this.setState({isEdit:false})
-      form.setFieldsValue({penName:data.penName,nickName:data.nickName,gender:data.sex})
+      form.setFieldsValue({penName:data.penName,nickName:data.nickName,gender:data.gender})
     }
     const handleSubmit = (e) => {
     e.preventDefault();

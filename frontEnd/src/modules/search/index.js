@@ -40,7 +40,7 @@ class Search extends React.Component{
           <img src={`/src/assets/images/${item.pic}` }style={{width:'100%',marginBottom:10}} />
           <h4>
           <Link 
-          to={`/book/${item.id}`}>
+          to={`/book/${item.bId}`}>
           {`《${item.bookName}》`}
           </Link>
           </h4>
@@ -57,16 +57,16 @@ class Search extends React.Component{
       {
         this.state.writerMsg.map(item=>{
           return (
-            <Popover key={item.id} content={<div>
+            <Popover key={item.uId} content={<div>
               <p>昵称:{`${item.nickName}`}</p>
               <p>wt生旦日:{`${moment().format('YYYY-MM-DD',item.create_date)}`}</p>
               <p>性别：{item.gender==0?'男':'女'}</p>             
-              <a onClick={()=>handleClick(item.id)}>查看作品</a>
+              <a onClick={()=>handleClick(item.uId)}>查看作品</a>
               </div>} title={item.penName} trigger="hover"
               placement="topLeft"
               >
               
-            <List.Item key={item.id} style={{textAlign:'left'}}>
+            <List.Item key={item.uId} style={{textAlign:'left'}}>
               <Avatar size={64} icon="user" />
               <span>{item.penName}</span>
               

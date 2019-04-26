@@ -128,6 +128,7 @@ export default{
           const result = yield call(logout,payload)
           if(result.code==0){          
             sessionStorage.removeItem('__SID')
+            sessionStorage.removeItem('userId')
           }
       }
           

@@ -86,7 +86,7 @@ class Product extends React.Component{
         
       </Row>
  
-				<h2>我的作品</h2>
+				<h2>已发表作品</h2>
 				<Row gutter={32}>
         <Col span={18}>
 
@@ -97,7 +97,7 @@ class Product extends React.Component{
       <List.Item style={{textAlign:'center',borderBottom:'1px solid orange',boxShadow:'0px 1px -1px grey'}}>
        
       
-          <img src={`/src/assets/images/${item.pic}` }style={{width:'100%',marginBottom:10}} />
+          <img src={`/src/assets/images/aaa.jpg` }style={{width:'100%',marginBottom:10}} />
           <h4>
           <Link 
           to={`/book/details/${item.id}`}>

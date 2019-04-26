@@ -20,14 +20,14 @@ class BookController{
 	
 	// 首页的书本信息
 	static async pageBooks(ctx,next){
-        let sql = `select bookName,t.recommends,t.collections,S3.id,S3.chapterNum from (select sum(recommends) as recommends,sum(collections) as collections,S1.id from tb_sp_book S1 join tb_sp_bookOpt S2 on S1.id=S2.bookId group by S1.id) t join tb_sp_book S3 on t.id = S3.id order by t.recommends,t.collections desc`;
+        let sql = `select bookName,t.recommends,t.collections,S3.bId as id,S3.chapterNum from (select sum(recommends) as recommends,sum(collections) as collections,S1.bId as id from tb_sp_book S1 join tb_sp_bookOpt S2 on S1.bId=S2.bId group by S1.bId) t join tb_sp_book S3 on t.id = S3.bId order by t.recommends,t.collections desc`;
         let result = await query( sql );
-        let sql2 = `select bookName,id from tb_sp_book order by create_date desc limit 5`
+        let sql2 = `select bookName,bId as id from tb_sp_book order by create_date desc limit 5`
         let result2 = await query( sql2 );
         if(result.length>0){
             ctx.body = {code:'0',msg:'成功',data:{daily:result,newBooks:result2}}
         }else{
-             let sql = `select chapterNum,bookName,id from tb_sp_book `
+             let sql = `select chapterNum,bookName,bId as id from tb_sp_book `
             let result = await query( sql );
 
             ctx.body = {code:'0',msg:'成功但没有opt',data:{daily:result,newBooks:result2}}
@@ -45,7 +45,7 @@ class BookController{
             let transmitId = ctx.header.__sid;
         let {content,chapterId} = ctx.request.body;
         let id = GetuuId("time");
-        let sql = `insert into tb_sp_comment (id,transmitId,content,chapterId,create_date) values("${id}","${transmitId}","${content}","${chapterId}",now())`
+        let sql = `insert into tb_sp_comment (comment_id,uId,content,cId,create_date) values("${id}","${transmitId}","${content}","${chapterId}",now())`
         let result = await query( sql );
         if(result){
             ctx.body = {code:'0',msg:'成功'}
@@ -63,12 +63,12 @@ class BookController{
     // 查询某书的bookOpt
     static async getBookOpt(ctx,next){  
         let {id} = ctx.query;
-        let sql = `select t.recommends,t.collections,S3.chapterNum from (select sum(recommends) as recommends,sum(collections) as collections,S1.id from tb_sp_book S1 join tb_sp_bookOpt S2 on S1.id=S2.bookId group by S1.id) t join tb_sp_book S3 on t.id = S3.id where S3.id="${id}"`;
+        let sql = `select t.recommends,t.collections,S3.chapterNum from (select sum(recommends) as recommends,sum(collections) as collections,S1.bId as id from tb_sp_book S1 join tb_sp_bookOpt S2 on S1.bId=S2.bId group by S1.bId) t join tb_sp_book S3 on t.id = S3.bId where S3.bId="${id}"`;
         let result = await query( sql );
         if(result.length>0){
             ctx.body = {code:'0',msg:'成功',data:result[0]}
         }else{
-             let sql = `select chapterNum from tb_sp_book where id= "${id}"`
+             let sql = `select chapterNum from tb_sp_book where bId= "${id}"`
             let result = await query( sql );
 
             ctx.body = {code:'0',msg:'暂无数据',data:{recommends:0,collections:0,chapterNum:result[0].chapterNum}}
@@ -87,14 +87,14 @@ class BookController{
       let transmitId = ctx.header.__sid;
       console.log('transmitId',transmitId)
     
-let sql1 = `select recommends,collections from tb_sp_bookOpt where transmitId = "${transmitId}" and bookId="${bookId}"`;
+let sql1 = `select recommends,collections from tb_sp_bookOpt where uId = "${transmitId}" and bId="${bookId}"`;
 let result1 = await query(sql1);
 console.log('result1',result1)
 if (result1.length>0) {
   let sql, result;
 
   if (type == 1 && result1[0].recommends==0) {
-    sql = `update tb_sp_bookOpt set recommends = 1 where transmitId = "${transmitId}" and bookId="${bookId}"`;
+    sql = `update tb_sp_bookOpt set recommends = 1 where uId = "${transmitId}" and bId="${bookId}"`;
     result = await query(sql);
     if (result) {
       ctx.body = { code: "0", msg: "成功" };
@@ -105,7 +105,7 @@ if (result1.length>0) {
     ctx.body = { code: "1", msg: "您已推荐过此书！" };
   }
   if (type == 0 && result1[0].collections == 0) {
-    sql = `update tb_sp_bookOpt set collections = 1 where transmitId = "${transmitId}" and bookId="${bookId}"`;
+    sql = `update tb_sp_bookOpt set collections = 1 where uId = "${transmitId}" and bId="${bookId}"`;
     result = await query(sql);
     if (result) {
       ctx.body = { code: "0", msg: "成功" };
@@ -118,10 +118,10 @@ if (result1.length>0) {
 } else {
   let sql, result;
   if (type == 1) {
-    sql = `insert into tb_sp_bookOpt (transmitId,bookId,recommends,create_date) values("${transmitId}","${bookId}",1,now())`;
+    sql = `insert into tb_sp_bookOpt (uId,bId,recommends,create_date) values("${transmitId}","${bookId}",1,now())`;
     result = await query(sql);
   } else {
-    sql = `insert into tb_sp_bookOpt (transmitId,bookId,collections,create_date) values("${transmitId}","${bookId}",1,now())`;
+    sql = `insert into tb_sp_bookOpt (uId,bId,collections,create_date) values("${transmitId}","${bookId}",1,now())`;
     result = await query(sql);
   }
   if (result) {
@@ -144,12 +144,12 @@ if (result1.length>0) {
         }else{
               let {chapterId} = ctx.query
     let transmitId = ctx.header.__sid;
-    let sql1 = `select likes from tb_sp_chapterOpt where transmitId = "${transmitId}" and chapterId="${chapterId}"`;
+    let sql1 = `select likes from tb_sp_chapterOpt where uId = "${transmitId}" and cId="${chapterId}"`;
     let result1 = await query(sql1);
     if(result1.length>0){
         ctx.body={code:'1',msg:'您已发表喜欢过这个章节！'}
     }else{
-        let sql = `insert into tb_sp_chapterOpt (chapterId,transmitId,likes,create_date) values("${chapterId}","${transmitId}",1,now())`
+        let sql = `insert into tb_sp_chapterOpt (cId,uId,likes,create_date) values("${chapterId}","${transmitId}",1,now())`
         let result = await query(sql);
         if(result){
             ctx.body = {code:'0',msg:'成功'}
@@ -167,14 +167,14 @@ if (result1.length>0) {
     static async getBook(ctx,next){
        const {bookId} = ctx.query;
        
-        let sql2 = `select bookId,bookName,chapterNum,A.id,isDelete,num,pic,title,A.writerId from tb_sp_chapter A join tb_sp_book B on A.bookId=B.id where A.bookId = "${bookId}" and A.status=1 order by A.num`
+        let sql2 = `select A.bId as bookId,bookName,chapterNum,A.cId as id,isDelete,num,title,A.uId as writerId from tb_sp_chapter A join tb_sp_book B on A.bId=B.bId where A.bId = "${bookId}" and A.status=1 order by A.num`
         let result2 = await query( sql2 );
         if(result2.length>0){
             var user = result2.map(item=>{
                 return item.writerId;
             })
             user = user.filter(item=>{return item!==undefined}).toString();
-            let sql3 = `select * from tb_sp_user where FIND_IN_SET(id,"${user}")`;
+            let sql3 = `select uId as id,gender,penName,nickName,birthday,description from tb_sp_user where FIND_IN_SET(uId,"${user}")`;
             let result3 = await query( sql3 );
             if(result3.length>0){
             ctx.body = {code:'0',msg:'成功',data:{chapterMsg:result2,userMsg:result3}}
@@ -206,17 +206,17 @@ if (result1.length>0) {
         const {chapterId} = ctx.query;
         // let writerId = ctx.header.__sid;
         //当前章节
-        let sql = `select * from tb_sp_chapter S1 join tb_sp_book S2 on S1.bookId=S2.id where S1.id="${chapterId}" order by S1.num `;
+        let sql = `select * from tb_sp_chapter S1 join tb_sp_book S2 on S1.bId=S2.bId where S1.cId="${chapterId}" order by S1.num `;
         let result = await query( sql );
-        let bookId = result[0].bookId;
-        let userId = result[0].writerId;
-        let sql2 = `select * from tb_sp_chapter where bookId = "${bookId}" and status=1 order by num`
+        let bookId = result[0].bId;
+        let userId = result[0].uId;
+        let sql2 = `select * from tb_sp_chapter where bId = "${bookId}" and status=1 order by num`
         let result2 = await query( sql2 );
-        let sql3 = `select * from tb_sp_user where id="${userId}"`;
+        let sql3 = `select * from tb_sp_user where uId="${userId}"`;
         let result3 = await query( sql3 ); 
-        let sql4 = `select penName,content,S1.create_date,pic from tb_sp_comment S1 join tb_sp_user S2 on S1.transmitId = S2.id where chapterId="${chapterId}"`
+        let sql4 = `select penName,content,S1.create_date from tb_sp_comment S1 join tb_sp_user S2 on S1.uId = S2.uId where cId="${chapterId}"`
         let result4 = await query( sql4 );
-        let sql5 = `select count(likes) as likes from tb_sp_chapterOpt where chapterId = "${chapterId}"`
+        let sql5 = `select count(likes) as likes from tb_sp_chapterOpt where cId = "${chapterId}"`
         let result5 = await query( sql5 );   
         if(result.length>0&&result2.length>0){
         	ctx.body = {code:'0',msg:'成功',data:{bookMsg:result2,chapterMsg:result[0],userMsg:result3[0],comments:result4,likes:result5[0].likes}}
@@ -229,7 +229,7 @@ if (result1.length>0) {
          var sql,result;
          switch (type) {
                 case 'like':
-                 {sql = `select count(likes) as likes from tb_sp_chapterOpt where chapterId = "${chapterId}"`
+                 {sql = `select count(likes) as likes from tb_sp_chapterOpt where cId = "${chapterId}"`
                 result = await query( sql )
                 if(result){
             ctx.body={code:'0',msg:'成功',data:result[0].likes}
@@ -239,7 +239,7 @@ if (result1.length>0) {
                  } 
                  break;
                  case 'comments':
-                 { sql = `select penName,content,S1.create_date,pic from tb_sp_comment S1 join tb_sp_user S2 on S1.transmitId = S2.id where chapterId="${chapterId}"`
+                 { sql = `select penName,content,S1.create_date from tb_sp_comment S1 join tb_sp_user S2 on S1.uId = S2.uId where cId="${chapterId}"`
                                    result = await query( sql )
                                     if(result){
             ctx.body={code:'0',msg:'成功',data:result}
@@ -252,9 +252,9 @@ if (result1.length>0) {
                   {
                     let {bookId} = ctx.query
                     let transmitId = ctx.header.__sid;
-                    sql=`update tb_sp_bookOpt set collections=0 where transmitId = "${transmitId}" and bookId="${bookId}"`
+                    sql=`update tb_sp_bookOpt set collections=0 where uId = "${transmitId}" and bId="${bookId}"`
                     result = result = await query( sql )
-                    let sql1 = `select S1.id,S1.bookName from tb_sp_book S1 join tb_sp_bookOpt S2 on S1.id=S2.bookId where S2.transmitId = "${transmitId}" and collections>0`
+                    let sql1 = `select S1.bId as id,S1.bookName from tb_sp_book S1 join tb_sp_bookOpt S2 on S1.bId=S2.bId where S2.uId = "${transmitId}" and collections>0`
                     let result1 = await query( sql1 )
                     if(result&&result1){
                     ctx.body={code:'0',msg:'成功',data:result1}
@@ -274,7 +274,7 @@ if (result1.length>0) {
         const {chapterId,bookId} = ctx.query;
         // let writerId = ctx.header.__sid;
         //当前章节
-        let sql = `select content,title,bookName,pic,S1.num,S1.id as chapterId,S2.id as bookId,S2.isInvite from tb_sp_chapter S1 join tb_sp_book S2 on S1.bookId=S2.id where S1.id="${chapterId}"`;
+        let sql = `select content,title,bookName,S1.num,S1.cId as chapterId,S2.bId as bookId,S2.isInvite from tb_sp_chapter S1 join tb_sp_book S2 on S1.bId=S2.bId where S1.cId="${chapterId}"`;
         let result = await query( sql );
            
         if(result.length>0){
@@ -287,9 +287,9 @@ if (result1.length>0) {
     static async getProducts(ctx,next){
         const {chapterId} = ctx.query;
         let writerId = ctx.header.__sid;
-        let sql = `select S1.num,S2.bookName,S1.id,S2.pic from tb_sp_chapter S1 join tb_sp_book S2 on S1.bookId=S2.id where S1.writerId="${writerId}" and S1.status=1`;
-        let sql2 = `select S1.num as chapterNum,S2.bookName,S1.id as chapterId,S2.id as bookId from tb_sp_chapter S1 join tb_sp_book S2 on S1.bookId=S2.id where S1.writerId="${writerId}" and S1.status=0`;//where S1.receiveWriterId="${writerId}" and S1.status=0
-        let sql3 = `select S1.id,S1.bookName from tb_sp_book S1 join tb_sp_bookOpt S2 on S1.id=S2.bookId where S2.transmitId = "${writerId}" and collections>0`
+        let sql = `select S1.num,S2.bookName,S1.cId as id from tb_sp_chapter S1 join tb_sp_book S2 on S1.bId=S2.bId where S1.uId="${writerId}" and S1.status=1`;
+        let sql2 = `select S1.num as chapterNum,S2.bookName,S1.cId as chapterId,S2.bId as bookId from tb_sp_chapter S1 join tb_sp_book S2 on S1.bId=S2.bId where S1.uId="${writerId}" and S1.status=0`;//where S1.receiveWriterId="${writerId}" and S1.status=0
+        let sql3 = `select S1.bId as id,S1.bookName from tb_sp_book S1 join tb_sp_bookOpt S2 on S1.bId=S2.bId where S2.uId = "${writerId}" and collections>0`
         let result = await query( sql );
         let result2 = await query( sql2 );
         let result3 = await query( sql3 );
@@ -304,7 +304,7 @@ if (result1.length>0) {
     // 获取可用作邀请的作品
     static async getInviteBooks(ctx,next){
         let writerId = ctx.header.__sid;
-        let sql = `select chapterNum,bookName,S2.id from tb_sp_book S2 join tb_sp_chapter S1 on S1.bookId=S2.id where S1.writerId="${writerId}" and S2.isInvite=0 and S1.status=1 and S2.currentWriter = "${writerId}"`;
+        let sql = `select chapterNum,bookName,S2.bId as id from tb_sp_book S2 join tb_sp_chapter S1 on S1.bId=S2.bId where S1.uId="${writerId}" and S2.isInvite=0 and S1.status=1 and S2.currentWriter = "${writerId}"`;
         let result = await query( sql );
         if(result){
            if(result.length>0){
@@ -322,7 +322,7 @@ if (result1.length>0) {
     static async getIBChapter(ctx,next){
         const {chapterId} = ctx.query;
         // let writerId = ctx.header.__sid;
-        let sql = `select chapterNum from tb_sp_book where id = "${chapterId}"`;
+        let sql = `select chapterNum from tb_sp_book where bId = "${chapterId}"`;
         let result = await query( sql );
         if(result){
             ctx.body = {code:'0',msg:'成功',data:result[0]}
@@ -347,10 +347,10 @@ if (result1.length>0) {
         let bookId  = GetuuId();
         let chapterId = GetuuId("time");
         // 书新增
-        let sql1 = `insert into tb_sp_book (id,bookName,writerId,status,create_date,currentWriter) 
+        let sql1 = `insert into tb_sp_book (bId,bookName,writerId,status,create_date,currentWriter) 
         values("${bookId}","${bookTitle}","${writerId}",${status},now(),"${writerId}");`;
         // 章节新增
-        let sql2 = `insert into tb_sp_chapter (id,writerId,bookId,num,content,title,status,create_date)
+        let sql2 = `insert into tb_sp_chapter (cid,uId,bId,num,content,title,status,create_date)
         values("${chapterId}","${writerId}","${bookId}",${num},"${content}","${chapterTitle}",${status},now());`;
         let result1 = await query( sql1 );
         let result2 = await query( sql2 );
@@ -362,10 +362,10 @@ if (result1.length>0) {
         }else{
             console.log('i come to update chapter')
         	let {bookTitle,chapterTitle,content,status,num,bookId,chapterId} = ctx.request.body;
-        	let sql2 = `update tb_sp_chapter set content="${content}",title="${chapterTitle}",status=${status} where id = "${chapterId}";`
+        	let sql2 = `update tb_sp_chapter set content="${content}",title="${chapterTitle}",status=${status} where cId = "${chapterId}";`
             let result2 = await query( sql2 );
         	if(status==1&&result2){        		 
-                 let sql1 = `update tb_sp_book set chapterNum=${num},isInvite=0 where id = "${bookId}"`;
+                 let sql1 = `update tb_sp_book set chapterNum=${num},isInvite=0 where bId = "${bookId}"`;
                  let result1 = await query( sql1 );
                  if(result1){
                     ctx.body={code:'0',msg:'成功'}

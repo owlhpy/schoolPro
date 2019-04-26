@@ -49,7 +49,7 @@ const gridStyle = {
               <div style={{textAlign:'center',width:'100%'}}>{book.collections?book.collections:0}</div>
             </List.Item>
             <List.Item>
-              <Icon type="eye" />推荐
+              <Icon type="eye" />点赞
               <div style={{textAlign:'center',width:'100%'}}>{book.recommends?book.recommends:0}</div>
             </List.Item>
             <List.Item>
