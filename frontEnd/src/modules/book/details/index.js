@@ -203,7 +203,7 @@ class Chapter extends React.Component {
                       marginRight: "5px"
                     }}
                   >
-                    推荐
+                    点赞
                   </Button>
                   <Button
                     onClick={() => handleOpt("collection")}
