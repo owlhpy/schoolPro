@@ -20,7 +20,7 @@ class BookController{
 	
 	// 首页的书本信息
 	static async pageBooks(ctx,next){
-        let sql = `select bookName,t.recommends,t.collections,S3.bId as id,S3.chapterNum from (select sum(recommends) as recommends,sum(collections) as collections,S1.bId as id from tb_sp_book S1 join tb_sp_bookOpt S2 on S1.bId=S2.bId group by S1.bId) t join tb_sp_book S3 on t.id = S3.bId order by t.recommends,t.collections desc`;
+        let sql = `select bookName,t.recommends,t.collections,S3.bId as id,S3.chapterNum from (select sum(recommends) as recommends,sum(collections) as collections,S1.bId as id from tb_sp_book S1 join tb_sp_bookOpt S2 on S1.bId=S2.bId group by S1.bId) t join tb_sp_book S3 on t.id = S3.bId order by t.recommends,t.collections desc limit 6`;
         let result = await query( sql );
         let sql2 = `select bookName,bId as id from tb_sp_book order by create_date desc limit 5`
         let result2 = await query( sql2 );
@@ -304,7 +304,7 @@ if (result1.length>0) {
     // 获取可用作邀请的作品
     static async getInviteBooks(ctx,next){
         let writerId = ctx.header.__sid;
-        let sql = `select chapterNum,bookName,S2.bId as id from tb_sp_book S2 join tb_sp_chapter S1 on S1.bId=S2.bId where S1.uId="${writerId}" and S2.isInvite=0 and S1.status=1 and S2.currentWriter = "${writerId}"`;
+        let sql = `select chapterNum,bookName,S2.bId as id from tb_sp_book S2 join tb_sp_chapter S1 on S1.bId=S2.bId where S1.uId="${writerId}" and S2.isInvite=0 and S1.status=1 and S2.currentWriter = "${writerId}" group by S2.bId`;
         let result = await query( sql );
         if(result){
            if(result.length>0){

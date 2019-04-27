@@ -88,7 +88,7 @@ class UserController {
     // 获取好友申请
     static async getFriendInvite(ctx,next){
         let id = ctx.header.__sid;
-        let sql = `select penName,S2.transmitId,S2.create_date,S2.status,S2.fId as id from tb_sp_user S1 join tb_sp_friendInvite S2 on S1.uId = S2.transmitId where S2.receiveId = "${id}"`
+        let sql = `select penName,nickName,S2.transmitId,S2.create_date,S2.status,S2.fId as id from tb_sp_user S1 join tb_sp_friendInvite S2 on S1.uId = S2.transmitId where S2.receiveId = "${id}"`
         let result = await query( sql );
         if(result.length>0){
             ctx.body={code:'0',msg:'成功！',data:result}
@@ -114,13 +114,20 @@ class UserController {
         let id = ctx.header.__sid;
         let {receiveId} = ctx.query;
         let newId = GetuuId("time")
-        let sql = `insert into tb_sp_friendInvite (fId,transmitId,receiveId,create_date) values("${newId}","${id}","${receiveId}",now())`
+        let sql1 = `select * from tb_sp_friendInvite where transmitId="${id}" and receiveId = "${receiveId}"`;
+        let result1 = await query(sql1);
+        if(result1.length>0){
+            ctx.body={code:'0',msg:'成功！'}
+        }else{
+           let sql = `insert into tb_sp_friendInvite (fId,transmitId,receiveId,create_date) values("${newId}","${id}","${receiveId}",now())`
         let result = await query( sql );
         if(result){
             ctx.body={code:'0',msg:'成功！'}
         }else{
             ctx.body={code:'1',msg:'失败！'}
+        }  
         }
+       
 
     }
      // 获取留言信息

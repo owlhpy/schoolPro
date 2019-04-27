@@ -37,7 +37,7 @@ class Search extends React.Component{
       <List.Item style={{textAlign:'center',borderBottom:'1px solid orange',boxShadow:'0px 1px -1px grey'}}>
        
       
-          <img src={`/src/assets/images/${item.pic}` }style={{width:'100%',marginBottom:10}} />
+          <img src={`/src/assets/images/aaa.jpg` }style={{width:'100%',marginBottom:10}} />
           <h4>
           <Link 
           to={`/book/${item.bId}`}>

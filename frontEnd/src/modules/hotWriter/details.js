@@ -51,7 +51,7 @@ class Writer extends React.Component{
 			
 				
 				<Col span={6}> 
-					{sessionStorage.getItem('userId')&&(!this.state.friends.includes(sessionStorage.getItem('userId')))&&<Button type="primary" onClick={()=>sendInvite(selfMsg.id)}>添加好友</Button>}
+					{sessionStorage.getItem('userId')&&(!this.state.friends.includes(sessionStorage.getItem('userId')))&&<Button type="primary" onClick={()=>sendInvite(selfMsg.uId)}>添加好友</Button>}
 				</Col>
 				<Col span={6}> 
 					wt生旦日：{moment().format('YYYY-MM-DD',selfMsg.create_date)}
