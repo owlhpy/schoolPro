@@ -46,7 +46,7 @@ const LoginBtn = ({dispatch,user})=>{
           <Link to="/self/product">作品</Link>
         </Menu.Item>
         <Menu.Item>
-          <Link to="/self/write">新建作品</Link>
+          <Link to="/self/write">新建书籍</Link>
         </Menu.Item>
         <Menu.Item>
           <Link to="/self/friendList">好友列表</Link>

@@ -102,7 +102,7 @@ if (result1.length>0) {
       ctx.body = { code: "1", msg: "错误" };
     }
   } else if(type == 1 && result1[0].recommends==1) {
-    ctx.body = { code: "1", msg: "您已推荐过此书！" };
+    ctx.body = { code: "1", msg: "您已赞过此书！" };
   }
   if (type == 0 && result1[0].collections == 0) {
     sql = `update tb_sp_bookOpt set collections = 1 where uId = "${transmitId}" and bId="${bookId}"`;
@@ -147,7 +147,7 @@ if (result1.length>0) {
     let sql1 = `select likes from tb_sp_chapterOpt where uId = "${transmitId}" and cId="${chapterId}"`;
     let result1 = await query(sql1);
     if(result1.length>0){
-        ctx.body={code:'1',msg:'您已发表喜欢过这个章节！'}
+        ctx.body={code:'1',msg:'您已赞过这个章节！'}
     }else{
         let sql = `insert into tb_sp_chapterOpt (cId,uId,likes,create_date) values("${chapterId}","${transmitId}",1,now())`
         let result = await query(sql);
