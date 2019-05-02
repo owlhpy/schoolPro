@@ -10,4 +10,4 @@ GP created in 2019/4/8
 6. 搜索结果页
 7. 个人中心（消息、作品、新建书籍、设置、好友列表）
 #### 本地效果图（gif可在images文件夹内查看）
-![img](images/view.gif)
+![img](images/view2.gif)
